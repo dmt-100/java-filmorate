@@ -33,7 +33,6 @@ public class UserControllerTest {
         IdCounter.setIdUserCounter(0);
     }
 
-
     @Test
     void testCreateUserWithEmptyLogin() {
         user.setLogin("");

@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
-import org.hibernate.validator.constraints.Email;
-
 import java.time.LocalDate;
 
 @Data

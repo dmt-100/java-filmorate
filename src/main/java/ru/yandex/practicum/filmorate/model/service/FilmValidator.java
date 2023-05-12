@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model.service;
 
-
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.exception.ValidationException;
