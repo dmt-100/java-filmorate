@@ -12,14 +12,14 @@ public class FilmValidator {
 
     private int maxDescriptionLength = 200;
 
-    public boolean validate (FilmRepository filmRepository, Film film) {
+    public boolean validate(FilmRepository filmRepository, Film film) {
         if (film.getName().isBlank()) {
             log.info("Проверка поля name, film.getName().isBlank(): {}", film.getName().isBlank());
             throw new ValidationException("Название фильма не должно быть пустым, " + film.getName().isBlank());
 
         } else if (film.getDescription().length() > maxDescriptionLength) {
             log.info("Максимальное количество букв в описании фильма не должно превышать " +
-                            maxDescriptionLength + ", film.getDescription().length: {}", film.getDescription().length());
+                    maxDescriptionLength + ", film.getDescription().length: {}", film.getDescription().length());
 
             throw new ValidationException("Максимальное количество букв в описании фильма не должно превышать " +
                     maxDescriptionLength + ", film.getDescription(): " + film.getDescription());

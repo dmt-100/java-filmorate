@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.service.IdCounter;
 
 import java.time.LocalDate;
+
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.exception.ValidationException;
 
