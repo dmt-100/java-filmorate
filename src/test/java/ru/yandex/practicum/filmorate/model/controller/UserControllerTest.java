@@ -100,9 +100,6 @@ public class UserControllerTest {
                 .birthday(LocalDate.of(1976, 9, 20))
                 .build();
 
-        userController.putUser(user2);
-
-        // почему-то не перехватывает эксепшн
         Throwable exception = assertThrows(ValidationException.class,
                 () -> userController.putUser(user2));
         assertEquals("Некорректный id пользователя. Id: " + user2.getId(), exception.getMessage());
