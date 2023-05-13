@@ -15,7 +15,6 @@ import java.util.Set;
 @RequestMapping("/users")
 public class UserController {
     UserRepository userRepository = new UserRepository();
-
     UserValidator userValidator = new UserValidator();
 
     @GetMapping
@@ -25,27 +24,20 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody User user) { // добавление фильма
-
         log.info("Пришёл запрос на добавление пользователя {}", user);
-
         if (userValidator.validate(userRepository, user)) {
-
             user.setId(IdCounter.increaseUserId());
             getUsers().add(user);
             log.info("Добавление пользователя {}, количество пользователей: {}", user, getUsers().size());
         }
-
         return user;
     }
 
     @PutMapping
     public User putUser(@RequestBody User user) {
         log.info("Пришёл запрос на обновление пользователя {}", user);
-
         User result = null;
-
         if (userValidator.validate(userRepository, user)) {
-
             for (User u : getUsers()) {
                 if (u.getId() == user.getId()) {
                     u.setEmail(user.getEmail());
@@ -56,7 +48,6 @@ public class UserController {
                     throw new ValidationException("Некорректный Id: " + user.getId());
                 }
             }
-
             for (User user1 : getUsers()) {
                 if (user1.equals(user)) {
                     result = user1;
@@ -65,6 +56,4 @@ public class UserController {
         }
         return result;
     }
-
-
 }

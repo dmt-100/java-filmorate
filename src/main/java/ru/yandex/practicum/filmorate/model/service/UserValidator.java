@@ -11,31 +11,34 @@ import java.time.LocalDate;
 public class UserValidator {
 
     public boolean validate(UserRepository userRepository, User user) {
+        final String login = user.getLogin();
+        final String email = user.getEmail();
+        final LocalDate birthDay = user.getBirthday();
+        final String name = user.getName();
+        final int id = user.getId();
 
-        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            log.info("Проверка поля login, user.getLogin().isBlank(): {}", user.getLogin().isBlank());
-            log.info("Проверка поля login, user.getLogin().contains(\" \"): {}", user.getLogin().contains(" "));
-            log.info("Проверка поля login, user.getLogin(): \"{}\"", user.getLogin());
-            throw new ValidationException("У пользователя некорректный логин: " + user.getLogin());
+        if (login.isBlank() || login.contains(" ")) {
+            log.warn("Проверка поля login, login.isBlank(): {}, login.contains(\" \"): {}",
+                    login.isBlank(), login.contains(" "));
+            throw new ValidationException("У пользователя некорректный логин: " + login);
 
-        } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-            log.info("Проверка поля email, user.getEmail().isBlank(): {}", user.getEmail().isBlank());
-            log.info("Проверка поля email, user.getEmail().contains(\"@\"): {}", user.getEmail().contains("@"));
-            log.info("Проверка поля email, user.getEmail(): {}", user.getEmail());
-            throw new ValidationException("У пользователя некорректный емейл: " + user.getEmail());
+        } else if (email.isBlank() || !email.contains("@")) {
+            log.warn("Проверка поля email, email.isBlank(): {}, email.contains(\"@\"): {}",
+                    email.isBlank(), email.contains("@"));
+            throw new ValidationException("У пользователя некорректный емейл: " + email);
 
-        } else if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.info("Проверка поля email, user.getEmail(): {}", user.getEmail());
-            throw new ValidationException("Некорректная дата рождения пользователя: " + user.getBirthday());
+        } else if (birthDay.isAfter(LocalDate.now())) {
+            log.info("Проверка поля email, birthDay: {}", birthDay);
+            throw new ValidationException("Некорректная дата рождения пользователя: " + birthDay);
 
         } else if (user.isEmptyName()) {
-            log.info("Проверка поля name на пустоту, user.getEmail().isBlank(): {}", user.getEmail().isBlank());
-            log.info("Проверка поля name на пустоту, user.getEmail(): {}", user.getEmail());
+            log.info("Проверка поля name на пустоту, name.isBlank(): {}. Имя пользователя: {}", name.isBlank(), name);
             user.setName(user.getLogin());
+            log.info("Обновленное имя пользователя: {}", name);
 
         } else if (user.getId() > userRepository.getUsers().size() + 1) {
-            log.info("Проверка на корректность id пользователя, user.getId(): {}", user.getId());
-            throw new ValidationException("Некорректный id пользователя. Id: " + user.getId());
+            log.info("Проверка на корректность id пользователя, id: {}", id);
+            throw new ValidationException("Некорректный id пользователя: " + id);
         }
 
         return true;

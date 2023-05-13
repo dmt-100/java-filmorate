@@ -25,16 +25,12 @@ public class FilmController {
 
     @PostMapping
     public Film createFilm(@RequestBody Film film) { // добавление фильма
-
         log.info("Пришел запрос на добавление фильма {}", film);
-
         film.setId(IdCounter.increaseFilmId());
-
         if (getFilms().contains(film)) {
             throw new ValidationException("Фильм " + film + ", уже есть в коллекции.");
         }
         if (filmValidator.validate(filmRepository, film)) {
-
             getFilms().add(film);
             log.info("Добавление фильма {}, количество фильмов: {}", film, getFilms().size());
         }
@@ -43,11 +39,8 @@ public class FilmController {
 
     @PutMapping
     public Film putFilm(@RequestBody Film film) {
-
         Film result = null;
-
         if (filmValidator.validate(filmRepository, film)) {
-
             for (Film f : filmRepository.getFilms()) {
                 if (f.getId() == film.getId()) {
                     f.setName(film.getName());
@@ -61,6 +54,5 @@ public class FilmController {
         }
         return result;
     }
-
 
 }

@@ -37,7 +37,6 @@ public class UserControllerTest {
     @Test
     void testCreateUserWithEmptyLogin() {
         user.setLogin("");
-
         Throwable exception = assertThrows(ValidationException.class,
                 () -> userController.createUser(user));
         assertEquals("У пользователя некорректный логин: " + user.getLogin(), exception.getMessage());
@@ -46,7 +45,6 @@ public class UserControllerTest {
     @Test
     void testCreateUserWithEmptySpaceLogin() {
         user.setLogin("dolore ullamco");
-
         Throwable exception = assertThrows(ValidationException.class,
                 () -> userController.createUser(user));
         assertEquals("У пользователя некорректный логин: " + user.getLogin(), exception.getMessage());
@@ -55,7 +53,6 @@ public class UserControllerTest {
     @Test
     void testCreateUserWithWrongEmail() {
         user.setEmail("mail.ru");
-
         Throwable exception = assertThrows(ValidationException.class,
                 () -> userController.createUser(user));
         assertEquals("У пользователя некорректный емейл: " + user.getEmail(), exception.getMessage());
@@ -64,7 +61,6 @@ public class UserControllerTest {
     @Test
     void testCreateUserWithWrongBirthday() {
         user.setBirthday(LocalDate.of(2446, 8, 20));
-
         Throwable exception = assertThrows(ValidationException.class,
                 () -> userController.createUser(user));
         assertEquals("Некорректная дата рождения пользователя: " + user.getBirthday(), exception.getMessage());
@@ -73,7 +69,6 @@ public class UserControllerTest {
     @Test
     void testPutUserUpdate() {
         userController.createUser(user);
-
         user2 = User.builder()
                 .login("doloreUpdate")
                 .name("est adipisicing")
@@ -81,17 +76,14 @@ public class UserControllerTest {
                 .email("mail@yandex.ru")
                 .birthday(LocalDate.of(1976, 9, 20))
                 .build();
-
         userController.putUser(user2);
-
         assertEquals(user, user2);
         assertEquals(1, userController.getUsers().size());
     }
 
     @Test
-    void testPutUserUpdateWithWrondId() {
+    void testPutUserUpdateWithWrongId() {
         userController.createUser(user);
-
         user2 = User.builder()
                 .login("doloreUpdate")
                 .name("est adipisicing")
@@ -99,10 +91,9 @@ public class UserControllerTest {
                 .email("mail@yandex.ru")
                 .birthday(LocalDate.of(1976, 9, 20))
                 .build();
-
         Throwable exception = assertThrows(ValidationException.class,
                 () -> userController.putUser(user2));
-        assertEquals("Некорректный id пользователя. Id: " + user2.getId(), exception.getMessage());
+        assertEquals("Некорректный id пользователя: " + user2.getId(), exception.getMessage());
     }
 
 
@@ -110,18 +101,14 @@ public class UserControllerTest {
     void testCreateUserWithEmptyName() {
         user.setName("");
         userController.createUser(user);
-
         User userExpected = userController.userRepository.getEqual(user, userController.getUsers());
-
         assertEquals(user.getLogin(), userExpected.getLogin());
-
         assertEquals(1, userController.getUsers().size());
     }
 
     @Test
     void testGetUsers() {
         userController.createUser(user);
-
         user2 = User.builder()
                 .login("doloreUpdate")
                 .name("est adipisicing")
@@ -130,7 +117,6 @@ public class UserControllerTest {
                 .build();
 
         userController.createUser(user2);
-
         assertEquals(userController.userRepository.getUsers(), userController.getUsers());
     }
 

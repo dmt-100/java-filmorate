@@ -14,21 +14,21 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FilmControllerTest {
     Film film;
     Film film2;
-    FilmController filmController = new FilmController();
+    FilmController filmController;
 
     @BeforeEach
     void setUp() {
         film = Film.builder()
                 .name("nisi eiusmod")
                 .description("adipisicing")
-                .releaseDate(LocalDate.of(1967, 03, 25))
+                .releaseDate(LocalDate.of(1967, 3, 25))
                 .duration(100)
                 .build();
-
     }
 
     @AfterEach
     void tearDown() {
+        filmController = new FilmController();
         filmController.getFilms().remove(film);
         IdCounter.setIdFilmCounter(0);
     }
@@ -45,19 +45,19 @@ public class FilmControllerTest {
 
     @Test
     void testCreateFilmWithTooLongDescription() {
-        film.setDescription("Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. " +
+        final String DESCRIPTION_MORE_THAN_200 = "Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. " +
                 "Здесь они хотят разыскать господина Огюста Куглова, который задолжал им деньги, " +
-                "а именно 20 миллионов. о Куглов, который за время «своего отсутствия», стал кандидатом Коломбани.");
-
+                "а именно 20 миллионов. о Куглов, который за время «своего отсутствия», стал кандидатом Коломбани.";
+        film.setDescription(DESCRIPTION_MORE_THAN_200);
         Throwable exception = assertThrows(ValidationException.class,
                 () -> filmController.createFilm(film));
-        assertEquals("Максимальное количество букв в описании фильма не должно превышать 200, " +
-                "film.getDescription(): " + film.getDescription(), exception.getMessage());
+        assertEquals("Максимальное количество букв в описании фильма не должно превышать 200, description.length(): "
+                + DESCRIPTION_MORE_THAN_200.length(), exception.getMessage());
     }
 
     @Test
     void testCreateFilmWithWrongReleaseDate() {
-        film.setReleaseDate(LocalDate.of(1890, 03, 25));
+        film.setReleaseDate(LocalDate.of(1890, 3, 25));
 
         Throwable exception = assertThrows(ValidationException.class,
                 () -> filmController.createFilm(film));
@@ -79,38 +79,33 @@ public class FilmControllerTest {
     void testPutFilmUpdate() {
         filmController.createFilm(film);
 
-
         film2 = Film.builder()
                 .id(1)
                 .name("nisi eiusmod")
                 .description("adipisicing")
-                .releaseDate(LocalDate.of(1967, 03, 25))
+                .releaseDate(LocalDate.of(1967, 3, 25))
                 .duration(100)
                 .rate(4)
                 .build();
-
         filmController.putFilm(film2);
         for (Film filmRepositoryFilm : filmController.filmRepository.getFilms()) {
             assertEquals(1, filmController.filmRepository.getFilms().size());
             assertEquals(filmRepositoryFilm.toString(), film2.toString());
-
         }
-
     }
 
     @Test
-    void testPutFilmUpdateWithWrondId() {
+    void testPutFilmUpdateWithWrongId() {
         filmController.createFilm(film);
 
         film2 = Film.builder()
                 .id(9999)
                 .name("nisi eiusmod")
                 .description("adipisicing")
-                .releaseDate(LocalDate.of(1967, 03, 25))
+                .releaseDate(LocalDate.of(1967, 3, 25))
                 .duration(100)
                 .rate(4)
                 .build();
-
         Throwable exception = assertThrows(ValidationException.class,
                 () -> filmController.putFilm(film2));
         assertEquals("Некорректный id фильма. Id: " + film2.getId(), exception.getMessage());
@@ -123,13 +118,11 @@ public class FilmControllerTest {
         film2 = Film.builder()
                 .name("nisi eiusmod")
                 .description("adipisicing")
-                .releaseDate(LocalDate.of(1967, 03, 25))
+                .releaseDate(LocalDate.of(1967, 3, 25))
                 .duration(100)
                 .rate(4)
                 .build();
-
         filmController.createFilm(film2);
-
         assertEquals(filmController.filmRepository.getFilms(), filmController.getFilms());
         assertEquals(2, filmController.getFilms().size());
     }
