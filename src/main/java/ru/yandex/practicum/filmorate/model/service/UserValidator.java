@@ -32,9 +32,9 @@ public class UserValidator {
             throw new ValidationException("Некорректная дата рождения пользователя: " + birthDay);
 
         } else if (user.isEmptyName()) {
-            log.info("Проверка поля name на пустоту, name.isBlank(): {}. Имя пользователя: {}", name.isBlank(), name);
+            log.info("Проверка поля name на null, имя пользователя: {}", name);
             user.setName(user.getLogin());
-            log.info("Обновленное имя пользователя: {}", name);
+            log.info("Обновленное имя пользователя: {}", user.getName());
 
         } else if (user.getId() > userRepository.getUsers().size() + 1) {
             log.info("Проверка на корректность id пользователя, id: {}", id);
