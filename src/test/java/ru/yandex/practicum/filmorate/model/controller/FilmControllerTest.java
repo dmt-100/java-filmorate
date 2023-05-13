@@ -36,7 +36,7 @@ public class FilmControllerTest {
     @Test
     void testCreateFilmWithEmptyName() {
         film.setName("");
-
+        filmController = new FilmController();
         Throwable exception = assertThrows(ValidationException.class,
                 () -> filmController.createFilm(film));
         assertEquals("Название фильма не должно быть пустым, " + film.getName().isBlank(),
@@ -45,6 +45,7 @@ public class FilmControllerTest {
 
     @Test
     void testCreateFilmWithTooLongDescription() {
+        filmController = new FilmController();
         final String DESCRIPTION_MORE_THAN_200 = "Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. " +
                 "Здесь они хотят разыскать господина Огюста Куглова, который задолжал им деньги, " +
                 "а именно 20 миллионов. о Куглов, который за время «своего отсутствия», стал кандидатом Коломбани.";
@@ -57,6 +58,7 @@ public class FilmControllerTest {
 
     @Test
     void testCreateFilmWithWrongReleaseDate() {
+        filmController = new FilmController();
         film.setReleaseDate(LocalDate.of(1890, 3, 25));
 
         Throwable exception = assertThrows(ValidationException.class,
@@ -66,6 +68,7 @@ public class FilmControllerTest {
 
     @Test
     void testCreateFilmWithWrongDuration() {
+        filmController = new FilmController();
         film.setDuration(-200);
 
         Throwable exception = assertThrows(ValidationException.class,
@@ -77,6 +80,7 @@ public class FilmControllerTest {
 
     @Test
     void testPutFilmUpdate() {
+        filmController = new FilmController();
         filmController.createFilm(film);
 
         film2 = Film.builder()
@@ -96,6 +100,7 @@ public class FilmControllerTest {
 
     @Test
     void testPutFilmUpdateWithWrongId() {
+        filmController = new FilmController();
         filmController.createFilm(film);
 
         film2 = Film.builder()
@@ -113,6 +118,7 @@ public class FilmControllerTest {
 
     @Test
     void testGetFilms() {
+        filmController = new FilmController();
         filmController.createFilm(film);
 
         film2 = Film.builder()
