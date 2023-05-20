@@ -2,21 +2,24 @@ package ru.yandex.practicum.filmorate.model.service;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.repository.FilmRepository;
+import ru.yandex.practicum.filmorate.model.service.exception.ResourceNotFoundException;
+import ru.yandex.practicum.filmorate.model.service.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.storage.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 
 @Slf4j
 public class FilmValidator {
 
-    public boolean validate(FilmRepository filmRepository, Film film) {
+    public boolean validate(InMemoryFilmStorage filmService, Film film) {
         int maxDescriptionLength = 200;
+
+        int id = film.getId();
         String name = film.getName();
         String description = film.getDescription();
         LocalDate releaseDate = film.getReleaseDate();
         int duration = film.getDuration();
-        int id = film.getId();
+
 
         if (name.isBlank()) {
             log.info("Проверка поля name, name.isBlank(): {}", name.isBlank());
@@ -37,10 +40,11 @@ public class FilmValidator {
             log.info("Проверка на корректность продолжительности фильма, duration: {}", duration);
             throw new ValidationException("Продолжительность фильма должна быть положительной: " + duration);
 
-        } else if (id > filmRepository.getFilms().size() + 1) {
+        } else if (id > filmService.getFilms().size() + 1) {
             log.info("Проверка на корректность id фильма, id: {}", id);
-            throw new ValidationException("Некорректный id фильма. Id: " + id);
+            throw new ResourceNotFoundException("Некорректный id фильма. Id: " + id);
         }
         return true;
     }
+
 }

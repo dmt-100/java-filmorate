@@ -8,15 +8,15 @@ import ru.yandex.practicum.filmorate.model.service.IdCounter;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.model.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.service.exception.ValidationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 public class UserControllerTest {
-    User user;
-    User user2;
-    UserController userController = new UserController();
+    private User user;
+    private User user2;
+    private final UserController userController = new UserController();
 
     @BeforeEach
     void setUp() {
@@ -101,7 +101,7 @@ public class UserControllerTest {
     void testCreateUserWithEmptyName() {
         user.setName("");
         userController.createUser(user);
-        User userExpected = userController.userRepository.getEqual(user, userController.getUsers());
+        User userExpected = userController.getStorage().getUserRepository().getEqual(user, userController.getUsers());
         assertEquals(user.getLogin(), userExpected.getLogin());
         assertEquals(1, userController.getUsers().size());
     }
@@ -117,7 +117,7 @@ public class UserControllerTest {
                 .build();
 
         userController.createUser(user2);
-        assertEquals(userController.userRepository.getUsers(), userController.getUsers());
+        assertEquals(userController.getStorage().getUsers(), userController.getUsers());
     }
 
 }

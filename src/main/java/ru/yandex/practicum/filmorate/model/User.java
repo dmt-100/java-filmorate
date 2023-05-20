@@ -2,7 +2,11 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 
+import javax.validation.constraints.Email;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -11,14 +15,21 @@ import java.time.LocalDate;
 public class User {
 
     private int id;
-    //    @Email
+    @Email
     private String email;
+    @NonNull
     private String login;
     private String name;
     private LocalDate birthday;
+    @Singular
+    private Set<Integer> friends;
+
+    public User() {
+
+    }
 
     public boolean isEmptyName() {
-        if (name == null) {
+        if (name == null || name.isEmpty()) {
             return true;
         } else {
             return false;

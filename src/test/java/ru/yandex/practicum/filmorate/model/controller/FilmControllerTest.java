@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.service.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.service.IdCounter;
 
 import java.time.LocalDate;
@@ -12,9 +12,9 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilmControllerTest {
-    Film film;
-    Film film2;
-    FilmController filmController;
+    private Film film;
+    private Film film2;
+    private FilmController filmController;
 
     @BeforeEach
     void setUp() {
@@ -92,8 +92,8 @@ public class FilmControllerTest {
                 .rate(4)
                 .build();
         filmController.putFilm(film2);
-        for (Film filmRepositoryFilm : filmController.filmRepository.getFilms()) {
-            assertEquals(1, filmController.filmRepository.getFilms().size());
+        for (Film filmRepositoryFilm : filmController.getInMemoryFilmStorage().getFilms()) {
+            assertEquals(1, filmController.getInMemoryFilmStorage().getFilms().size());
             assertEquals(filmRepositoryFilm.toString(), film2.toString());
         }
     }
@@ -129,7 +129,7 @@ public class FilmControllerTest {
                 .rate(4)
                 .build();
         filmController.createFilm(film2);
-        assertEquals(filmController.filmRepository.getFilms(), filmController.getFilms());
+        assertEquals(filmController.getInMemoryFilmStorage().getFilms(), filmController.getFilms());
         assertEquals(2, filmController.getFilms().size());
     }
 }
