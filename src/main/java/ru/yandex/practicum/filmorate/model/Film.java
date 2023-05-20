@@ -20,7 +20,7 @@ public class Film {
     @Positive(message = "Значение должно быть положительным")
     private int duration;
     private int rate;
-    @NonNull
+//    @NonNull
     private Set<Integer> likes;
 
 }

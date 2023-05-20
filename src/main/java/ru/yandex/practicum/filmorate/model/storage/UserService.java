@@ -8,25 +8,27 @@ import java.util.*;
 @Service
 public class UserService {
 
-    public User addFriend(InMemoryUserStorage storage, int id, int friendId) {
+    private final UserInMemoryStorage storage;
 
-        checkFriendsOfNull(storage, id, friendId);
+    public UserService(UserInMemoryStorage storage) {
+        this.storage = storage;
+    }
+
+    public User addFriend(int id, int friendId) {
 
         storage.getUserById(id).getFriends().add(friendId);
         storage.getUserById(friendId).getFriends().add(id); // ТЗ-10: Пока пользователям не надо одобрять заявки в друзья — добавляем сразу. То есть если Лена стала другом Саши, то это значит, что Саша теперь друг Лены
         return storage.getUserById(id);
     }
 
-    public User deleteFriend(InMemoryUserStorage storage, int id, int friendId) {
+    public User deleteFriend(int id, int friendId) {
         storage.getUserById(id).getFriends().remove(friendId);
         storage.getUserById(friendId).getFriends().remove(id);
         return storage.getUserById(id);
     }
 
-    public Set<User> getCommonFriendsById(InMemoryUserStorage storage, int id, int otherId) {
+    public Set<User> getCommonFriendsById(int id, int otherId) {
         Set<User> result = new LinkedHashSet<>();
-
-        checkFriendsOfNull(storage, id, otherId);
 
         if (storage.getUserById(id).getFriends().size() == 0) {
             return result;
@@ -43,7 +45,7 @@ public class UserService {
 //        getUsers().stream().map(u -> getUserById(id).getFriends().stream().filter(f -> for))
     }
 
-    public List<User> getFriends(InMemoryUserStorage storage, int id) {
+    public List<User> getFriends(int id) {
         List<User> users = new ArrayList<>();
         for (Integer friendId : storage.getUserById(id).getFriends()) {
             users.add(storage.getUserById(friendId));
@@ -51,12 +53,4 @@ public class UserService {
         return users;
     }
 
-    private void checkFriendsOfNull(InMemoryUserStorage storage, int id, int friendId) {
-        if (storage.getUserById(id).getFriends() == null) {
-            storage.getUserById(id).setFriends(new HashSet<>());
-        }
-        if (storage.getUserById(friendId).getFriends() == null) {
-            storage.getUserById(friendId).setFriends(new HashSet<>());
-        }
-    }
 }

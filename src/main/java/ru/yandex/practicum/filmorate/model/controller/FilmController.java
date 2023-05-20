@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.service.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.storage.FilmService;
-import ru.yandex.practicum.filmorate.model.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.model.storage.FilmInMemoryStorage;
 import ru.yandex.practicum.filmorate.model.service.FilmValidator;
 import ru.yandex.practicum.filmorate.model.service.IdCounter;
 
@@ -16,29 +16,38 @@ import java.util.*;
 @RequestMapping("/films")
 public class FilmController {
 
-    private final InMemoryFilmStorage inMemoryFilmStorage = new InMemoryFilmStorage();
-    private final FilmService filmService = new FilmService();
-    private final FilmValidator filmValidator = new FilmValidator();
+    private final FilmInMemoryStorage storage = new FilmInMemoryStorage();
+    private final FilmService service = new FilmService(storage);
+    private final FilmValidator validator = new FilmValidator(storage);
 
     @GetMapping
     public Set<Film> getFilms() { // получение всех фильмов.
-        return inMemoryFilmStorage.getFilms();
+        return storage.getFilms();
     }
 
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable int id) { // получение всех фильмов.
         log.info("Получение фильма по id: {}", id);
-        return inMemoryFilmStorage.getFilmById(id);
+        validator.validateId(id);
+        return storage.getFilmById(id);
+    }
+
+    @GetMapping("/popular")
+    public Set<Film> getPopularFilms(@RequestParam(value = "count", required = false) @PathVariable Integer count) {
+        log.info("Получение наиболее популярных фильмов: {}", count);
+        Set<Film> result;
+        result = service.getMostPopularFilms(Objects.requireNonNullElse(count, 10));
+        return result;
     }
 
     @PostMapping
     public Film createFilm(@RequestBody Film film) { // добавление фильма
         log.info("Добавление фильма {}", film);
-        film.setId(IdCounter.increaseFilmId());
         if (getFilms().contains(film)) {
             throw new ValidationException("Фильм " + film + ", уже есть в коллекции.");
         }
-        if (filmValidator.validate(inMemoryFilmStorage, film)) {
+        if (validator.validate(film)) {
+            film.setId(IdCounter.increaseFilmId());
             getFilms().add(film);
             log.info("Добавление фильма {}, количество фильмов: {}", film, getFilms().size());
         }
@@ -48,44 +57,37 @@ public class FilmController {
     @PutMapping
     public Film putFilm(@RequestBody Film film) {
         Film result = null;
-        if (filmValidator.validate(inMemoryFilmStorage, film)) {
-            for (Film f : inMemoryFilmStorage.getFilms()) {
-                if (f.getId() == film.getId()) {
-                    f.setName(film.getName());
-                    f.setDescription(film.getDescription());
-                    f.setReleaseDate(film.getReleaseDate());
-                    f.setDuration(film.getDuration());
-                    f.setRate(film.getRate());
-                    result = f;
-                }
+        if (validator.validate(film)) {
+            Film f = storage.getFilmById(film.getId());
+
+            f.setName(film.getName());
+            f.setDescription(film.getDescription());
+            f.setReleaseDate(film.getReleaseDate());
+            f.setDuration(film.getDuration());
+            f.setRate(film.getRate());
+            if (film.getLikes() == null) {
+                f.setLikes(new HashSet<>());
             }
+            result = f;
         }
         return result;
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public Film  addLikeToFilm(@PathVariable int id, @PathVariable int userId) {
+    public Film addLikeToFilm(@PathVariable int id, @PathVariable int userId) {
         log.info("Добавление лайка фильму с id: {}, от пользователя id: {}", id, userId);
-        return inMemoryFilmStorage.addLikeToFilm(id, userId);
+        validator.validateId(id);
+        validator.validateId(userId);
+        return service.addLike(id, userId);
     }
 
-    @GetMapping("/popular?count={count}")
-    public List<Film> getPopularFilms(@RequestParam(value = "count", required=false)@PathVariable Integer count) {
-        log.info("Получение наиболее популярных фильмов: {}", count);
-        List<Film> result;
-        result = filmService.getMostPopularFilms(Objects.requireNonNullElse(count, 10));
-        return result;
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@PathVariable int id, @PathVariable int userId) {
+        log.info("Удаление лайка фильму с id: {}, от пользователя id: {}", id, userId);
+        validator.validateId(id);
+        validator.validateId(userId);
+        service.removeLike(id, userId);
+
     }
 
-    @GetMapping("/popular")
-    public List<Film> getPopularFilms2() {
-        log.info("Получение наиболее популярных фильмов: {}", 10);
-        List<Film> result;
-        result = filmService.getMostPopularFilms(10);
-        return result;
-    }
-
-    public InMemoryFilmStorage getInMemoryFilmStorage() {
-        return inMemoryFilmStorage;
-    }
 }

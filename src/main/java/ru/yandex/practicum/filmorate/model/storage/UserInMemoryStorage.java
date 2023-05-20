@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.model.service.IdCounter;
 import java.util.Set;
 
 @Component
-public class InMemoryUserStorage implements UserStorage{
+public class UserInMemoryStorage implements UserStorage{
     private final UserRepository userRepository = new UserRepository();
 
     @Override

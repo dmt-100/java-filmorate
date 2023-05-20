@@ -92,8 +92,8 @@ public class FilmControllerTest {
                 .rate(4)
                 .build();
         filmController.putFilm(film2);
-        for (Film filmRepositoryFilm : filmController.getInMemoryFilmStorage().getFilms()) {
-            assertEquals(1, filmController.getInMemoryFilmStorage().getFilms().size());
+        for (Film filmRepositoryFilm : filmController.getStorage().getFilms()) {
+            assertEquals(1, filmController.getStorage().getFilms().size());
             assertEquals(filmRepositoryFilm.toString(), film2.toString());
         }
     }
@@ -129,7 +129,7 @@ public class FilmControllerTest {
                 .rate(4)
                 .build();
         filmController.createFilm(film2);
-        assertEquals(filmController.getInMemoryFilmStorage().getFilms(), filmController.getFilms());
+        assertEquals(filmController.getStorage().getFilms(), filmController.getFilms());
         assertEquals(2, filmController.getFilms().size());
     }
 }

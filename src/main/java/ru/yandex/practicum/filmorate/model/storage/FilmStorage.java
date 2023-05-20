@@ -9,8 +9,4 @@ public interface FilmStorage {
 
     Set<Film> getFilms();
     Film getFilmById(int id);
-    void setFilm(Film film);
-    void addLike(Film film, int id);
-    void removeLike(Film film, int id);
-    Film addLikeToFilm(int id, int userId);
 }
