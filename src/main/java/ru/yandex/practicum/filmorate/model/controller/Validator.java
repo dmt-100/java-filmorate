@@ -28,6 +28,7 @@ public class Validator {
     public static boolean validateFilm(Film film) {
         int maxDescriptionLength = 200;
 
+        int id = film.getId();
         String name = film.getName();
         String description = film.getDescription();
         LocalDate releaseDate = film.getReleaseDate();
@@ -54,6 +55,8 @@ public class Validator {
 
         } else if (film.getLikes() == null) {
             film.setLikes(new HashSet<>());
+        } else {
+            validateFilmId(id);
         }
         return true;
     }
