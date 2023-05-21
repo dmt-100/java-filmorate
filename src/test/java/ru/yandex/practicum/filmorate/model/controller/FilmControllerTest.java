@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.service.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.service.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.service.IdCounter;
 
@@ -63,7 +64,7 @@ public class FilmControllerTest {
 
         Throwable exception = assertThrows(ValidationException.class,
                 () -> filmController.createFilm(film));
-        assertEquals("Некорректная дата фильма. Дата: " + film.getReleaseDate(), exception.getMessage());
+        assertEquals("Некорректная дата фильма: " + film.getReleaseDate(), exception.getMessage());
     }
 
     @Test
@@ -111,9 +112,9 @@ public class FilmControllerTest {
                 .duration(100)
                 .rate(4)
                 .build();
-        Throwable exception = assertThrows(ValidationException.class,
+        Throwable exception = assertThrows(ResourceNotFoundException.class,
                 () -> filmController.putFilm(film2));
-        assertEquals("Некорректный id фильма. Id: " + film2.getId(), exception.getMessage());
+        assertEquals("Некорректный id фильма: " + film2.getId(), exception.getMessage());
     }
 
     @Test

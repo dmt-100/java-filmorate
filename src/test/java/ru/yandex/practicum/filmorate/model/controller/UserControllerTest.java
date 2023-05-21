@@ -94,7 +94,7 @@ public class UserControllerTest {
                 .build();
         Throwable exception = assertThrows(ResourceNotFoundException.class,
                 () -> userController.putUser(user2));
-        assertEquals("Некорректный id фильма: " + user2.getId(), exception.getMessage());
+        assertEquals("Некорректный id пользователя: " + user2.getId(), exception.getMessage());
     }
 
 

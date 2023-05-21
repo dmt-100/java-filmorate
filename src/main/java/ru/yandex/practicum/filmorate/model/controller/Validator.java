@@ -55,9 +55,9 @@ public class Validator {
 
         } else if (film.getLikes() == null) {
             film.setLikes(new HashSet<>());
-        } else {
-            validateFilmId(id);
         }
+        validateFilmId(id);
+
         return true;
     }
 
@@ -105,7 +105,7 @@ public class Validator {
     public static void validateUserId(int id) {
         log.info("Проверка на корректность id пользователя: {}", id);
         if (id < 0 || id > userStorage.getUsers().size() + 1) {
-            throw new ResourceNotFoundException("Некорректный id фильма: " + id);
+            throw new ResourceNotFoundException("Некорректный id пользователя: " + id);
         }
     }
 
