@@ -1,10 +1,10 @@
-package ru.yandex.practicum.filmorate.model.controller;
+package ru.yandex.practicum.filmorate.model.service;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.model.service.exception.ResourceNotFoundException;
-import ru.yandex.practicum.filmorate.model.service.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.exception.ResourceNotFoundException;
+import ru.yandex.practicum.filmorate.model.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.storage.FilmInMemoryStorage;
 import ru.yandex.practicum.filmorate.model.storage.UserInMemoryStorage;
 
@@ -89,9 +89,9 @@ public class Validator {
         }
         if (user.getFriends() == null) {
             user.setFriends(new HashSet<>());
-        } else {
-            validateUserId(id);
         }
+        validateUserId(id);
+
         return true;
     }
 

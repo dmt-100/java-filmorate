@@ -3,7 +3,8 @@ package ru.yandex.practicum.filmorate.model.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.storage.FilmService;
+import ru.yandex.practicum.filmorate.model.service.FilmService;
+import ru.yandex.practicum.filmorate.model.service.Validator;
 import ru.yandex.practicum.filmorate.model.storage.FilmInMemoryStorage;
 
 import java.util.*;
@@ -15,7 +16,7 @@ public class FilmController {
 
     private final FilmInMemoryStorage storage = new FilmInMemoryStorage();
     private final FilmService service = new FilmService(storage);
-    public final Validator validator = new Validator(storage);
+    private final Validator validator = new Validator(storage);
 
     @GetMapping
     public Set<Film> getFilms() { // получение всех фильмов.
@@ -42,6 +43,7 @@ public class FilmController {
 
     @PutMapping
     public Film putFilm(@RequestBody Film film) {
+        log.info("Обновление фильма {}", film);
         return storage.updateFilm(film);
     }
 

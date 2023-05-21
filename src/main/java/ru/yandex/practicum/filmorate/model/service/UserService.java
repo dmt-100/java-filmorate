@@ -1,8 +1,8 @@
-package ru.yandex.practicum.filmorate.model.storage;
+package ru.yandex.practicum.filmorate.model.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.model.controller.Validator;
+import ru.yandex.practicum.filmorate.model.storage.UserInMemoryStorage;
 
 import java.util.*;
 

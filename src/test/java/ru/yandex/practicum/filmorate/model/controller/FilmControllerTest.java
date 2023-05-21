@@ -4,8 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.service.exception.ResourceNotFoundException;
-import ru.yandex.practicum.filmorate.model.service.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.exception.ResourceNotFoundException;
+import ru.yandex.practicum.filmorate.model.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.service.IdCounter;
 
 import java.time.LocalDate;

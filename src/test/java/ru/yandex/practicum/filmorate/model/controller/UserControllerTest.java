@@ -8,8 +8,8 @@ import ru.yandex.practicum.filmorate.model.service.IdCounter;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.model.service.exception.ResourceNotFoundException;
-import ru.yandex.practicum.filmorate.model.service.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.exception.ResourceNotFoundException;
+import ru.yandex.practicum.filmorate.model.exception.ValidationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

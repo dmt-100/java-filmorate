@@ -3,8 +3,9 @@ package ru.yandex.practicum.filmorate.model.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.service.Validator;
 import ru.yandex.practicum.filmorate.model.storage.UserInMemoryStorage;
-import ru.yandex.practicum.filmorate.model.storage.UserService;
+import ru.yandex.practicum.filmorate.model.service.UserService;
 
 import java.util.List;
 import java.util.Set;
@@ -18,7 +19,7 @@ public class UserController {
     private final Validator validator = new Validator(storage);
 
     @GetMapping
-    public Set<User> getUsers() { // получение всех фильмов.
+    public Set<User> getUsers() {
         return storage.getUsers();
     }
 
@@ -37,10 +38,7 @@ public class UserController {
     @GetMapping("/{id}/friends/common/{otherId}")
     public Set<User> getCommonFriendsById(@PathVariable int id, @PathVariable int otherId) {
         log.info("Количество обших друзей, друг1 {}, друг2 {}", id, otherId);
-        Set<User> friends;
-        friends = userService.getCommonFriendsById(id, otherId);
-
-        return friends;
+        return userService.getCommonFriendsById(id, otherId);
     }
 
     @PostMapping

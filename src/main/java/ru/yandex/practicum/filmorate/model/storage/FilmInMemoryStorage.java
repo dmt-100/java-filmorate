@@ -3,9 +3,10 @@ package ru.yandex.practicum.filmorate.model.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.controller.Validator;
+import ru.yandex.practicum.filmorate.model.interfaces.FilmStorage;
+import ru.yandex.practicum.filmorate.model.service.Validator;
 import ru.yandex.practicum.filmorate.model.service.IdCounter;
-import ru.yandex.practicum.filmorate.model.service.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.exception.ValidationException;
 
 import java.util.*;
 

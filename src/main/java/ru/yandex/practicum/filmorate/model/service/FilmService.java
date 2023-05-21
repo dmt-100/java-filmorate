@@ -1,9 +1,9 @@
-package ru.yandex.practicum.filmorate.model.storage;
+package ru.yandex.practicum.filmorate.model.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.controller.Validator;
-import ru.yandex.practicum.filmorate.model.service.exception.ResourceNotFoundException;
+import ru.yandex.practicum.filmorate.model.exception.ResourceNotFoundException;
+import ru.yandex.practicum.filmorate.model.storage.FilmInMemoryStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
