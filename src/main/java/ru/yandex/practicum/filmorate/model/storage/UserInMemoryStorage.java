@@ -7,9 +7,6 @@ import ru.yandex.practicum.filmorate.model.service.Validator;
 import ru.yandex.practicum.filmorate.model.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.service.IdCounter;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 @Component
