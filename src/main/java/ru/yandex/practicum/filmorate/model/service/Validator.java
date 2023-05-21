@@ -139,7 +139,7 @@ public class Validator {
             }
         }
         if (object.getClass().equals(Film.class)) {
-            for (String nullField : userNullFields) {
+            for (String nullField : filmNullFields) {
                 Film film = (Film) object;
                 switch (nullField) {
                     case "likes":
