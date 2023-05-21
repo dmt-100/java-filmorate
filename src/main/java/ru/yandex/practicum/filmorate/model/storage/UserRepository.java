@@ -1,10 +1,8 @@
 package ru.yandex.practicum.filmorate.model.storage;
 
 import lombok.Data;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 

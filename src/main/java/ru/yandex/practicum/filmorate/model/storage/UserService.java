@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model.storage;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.controller.Validator;
 
 import java.util.*;
 
@@ -15,9 +16,11 @@ public class UserService {
     }
 
     public User addFriend(int id, int friendId) {
-
+        Validator.validateUserId(id);
+        Validator.validateUserId(friendId);
         storage.getUserById(id).getFriends().add(friendId);
-        storage.getUserById(friendId).getFriends().add(id); // ТЗ-10: Пока пользователям не надо одобрять заявки в друзья — добавляем сразу. То есть если Лена стала другом Саши, то это значит, что Саша теперь друг Лены
+        storage.getUserById(friendId).getFriends().add(id);
+
         return storage.getUserById(id);
     }
 
@@ -28,8 +31,9 @@ public class UserService {
     }
 
     public Set<User> getCommonFriendsById(int id, int otherId) {
+        Validator.validateUserId(id);
+        Validator.validateUserId(otherId);
         Set<User> result = new LinkedHashSet<>();
-
         if (storage.getUserById(id).getFriends().size() == 0) {
             return result;
         }
@@ -41,12 +45,11 @@ public class UserService {
             }
         }
         return result;
-//        List<Integer> result;
-//        getUsers().stream().map(u -> getUserById(id).getFriends().stream().filter(f -> for))
     }
 
     public List<User> getFriends(int id) {
         List<User> users = new ArrayList<>();
+        Validator.validateUserId(id);
         for (Integer friendId : storage.getUserById(id).getFriends()) {
             users.add(storage.getUserById(friendId));
         }
