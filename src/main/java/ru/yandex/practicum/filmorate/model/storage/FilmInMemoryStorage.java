@@ -22,8 +22,10 @@ public class FilmInMemoryStorage implements FilmStorage {
             throw new ValidationException("Фильм " + film + ", уже есть в коллекции.");
         }
         if (Validator.validateFilm(film)) {
-
             film.setId(IdCounter.increaseFilmId());
+            if (film.getLikes() == null) {
+                film.setLikes(new HashSet<>());
+            }
             getFilms().add(film);
             log.info("Добавление фильма {}, количество фильмов: {}", film, getFilms().size());
         }
@@ -41,9 +43,8 @@ public class FilmInMemoryStorage implements FilmStorage {
             f.setReleaseDate(film.getReleaseDate());
             f.setDuration(film.getDuration());
             f.setRate(film.getRate());
-            if (film.getLikes() == null) {
-                f.setLikes(new HashSet<>());
-            }
+            f.setLikes(film.getLikes());
+
             filmUpdate = f;
         }
         return filmUpdate;

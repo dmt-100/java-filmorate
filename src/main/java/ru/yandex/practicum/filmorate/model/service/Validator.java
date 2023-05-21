@@ -8,8 +8,11 @@ import ru.yandex.practicum.filmorate.model.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.storage.FilmInMemoryStorage;
 import ru.yandex.practicum.filmorate.model.storage.UserInMemoryStorage;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 @Slf4j
 public class Validator {
@@ -52,12 +55,9 @@ public class Validator {
         } else if (duration < 1) {
             log.info("Проверка на корректность продолжительности фильма, duration: {}", duration);
             throw new ValidationException("Продолжительность фильма должна быть положительной: " + duration);
-
-        } else if (film.getLikes() == null) {
-            film.setLikes(new HashSet<>());
         }
+        checkIfAnyFieldIsNull(film);
         validateFilmId(id);
-
         return true;
     }
 
@@ -87,11 +87,8 @@ public class Validator {
             user.setName(user.getLogin());
             log.info("Обновленное имя пользователя: {}", user.getName());
         }
-        if (user.getFriends() == null) {
-            user.setFriends(new HashSet<>());
-        }
+        checkIfAnyFieldIsNull(user);
         validateUserId(id);
-
         return true;
     }
 
@@ -106,6 +103,50 @@ public class Validator {
         log.info("Проверка на корректность id пользователя: {}", id);
         if (id < 0 || id > userStorage.getUsers().size() + 1) {
             throw new ResourceNotFoundException("Некорректный id пользователя: " + id);
+        }
+    }
+
+    private static void checkIfAnyFieldIsNull(Object object) {
+        List<String> userNullFields = new ArrayList<>();
+        List<String> filmNullFields = new ArrayList<>();
+
+        Field[] fields = object.getClass().getDeclaredFields();
+
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object fieldValue = field.get(object);
+                if (fieldValue == null) {
+                    if (object.getClass().equals(User.class)) {
+                        userNullFields.add(field.getName());
+                    }
+                    if (object.getClass().equals(Film.class)) {
+                        filmNullFields.add(field.getName());
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        if (object.getClass().equals(User.class)) {
+            for (String nullField : userNullFields) {
+                User user = (User) object;
+                switch (nullField) {
+                    case "friends":
+                        user.setFriends(new HashSet<>());
+                        break;
+                }
+            }
+        }
+        if (object.getClass().equals(Film.class)) {
+            for (String nullField : userNullFields) {
+                Film film = (Film) object;
+                switch (nullField) {
+                    case "likes":
+                        film.setLikes(new HashSet<>());
+                        break;
+                }
+            }
         }
     }
 

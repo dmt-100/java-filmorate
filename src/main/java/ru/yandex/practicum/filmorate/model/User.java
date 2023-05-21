@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Data
@@ -19,8 +20,7 @@ public class User {
     private String login;
     private String name;
     private LocalDate birthday;
-    @Singular
-    private Set<Integer> friends;
+    private Set<Integer> friends = new LinkedHashSet<>();
 
     public boolean isEmptyName() {
         if (name == null || name.isEmpty()) {

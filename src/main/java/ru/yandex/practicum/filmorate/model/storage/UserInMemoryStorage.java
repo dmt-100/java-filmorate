@@ -7,6 +7,9 @@ import ru.yandex.practicum.filmorate.model.service.Validator;
 import ru.yandex.practicum.filmorate.model.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.service.IdCounter;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 @Component
@@ -48,6 +51,7 @@ public class UserInMemoryStorage implements UserStorage {
                     u.setLogin(user.getLogin());
                     u.setName(user.getName());
                     u.setBirthday(user.getBirthday());
+                    u.setFriends(user.getFriends());
                 } else {
                     throw new ValidationException("Некорректный Id: " + user.getId());
                 }
@@ -64,5 +68,6 @@ public class UserInMemoryStorage implements UserStorage {
     public UserRepository getUserRepository() {
         return userRepository;
     }
+
 
 }
