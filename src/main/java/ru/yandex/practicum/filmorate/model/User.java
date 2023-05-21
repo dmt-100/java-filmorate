@@ -22,10 +22,6 @@ public class User {
     @Singular
     private Set<Integer> friends;
 
-    public User() {
-
-    }
-
     public boolean isEmptyName() {
         if (name == null || name.isEmpty()) {
             return true;
