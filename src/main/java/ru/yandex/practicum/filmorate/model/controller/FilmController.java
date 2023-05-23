@@ -1,11 +1,11 @@
 package ru.yandex.practicum.filmorate.model.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.interfaces.IFilmStorage;
 import ru.yandex.practicum.filmorate.model.service.FilmService;
-import ru.yandex.practicum.filmorate.model.service.Validator;
-import ru.yandex.practicum.filmorate.model.storage.FilmInMemoryStorage;
 
 import java.util.*;
 
@@ -14,19 +14,23 @@ import java.util.*;
 @RequestMapping("/films")
 public class FilmController {
 
-    private final FilmInMemoryStorage storage = new FilmInMemoryStorage();
-    private final FilmService service = new FilmService(storage);
-    private final Validator validator = new Validator(storage);
+    @Autowired
+    private IFilmStorage filmStorage;
+
+    @Autowired
+    private FilmService service;
+
 
     @GetMapping
     public Set<Film> getFilms() { // получение всех фильмов.
-        return storage.getFilms();
+        return filmStorage.getFilms();
     }
 
     @GetMapping("/{id}")
+    @ResponseBody
     public Film getFilmById(@PathVariable int id) {
         log.info("Получение фильма по id: {}", id);
-        return storage.getFilmById(id);
+        return filmStorage.getFilmById(id);
     }
 
     @GetMapping("/popular")
@@ -38,13 +42,13 @@ public class FilmController {
     @PostMapping
     public Film createFilm(@RequestBody Film film) { // добавление фильма
         log.info("Добавление фильма {}", film);
-        return storage.addFilm(film);
+        return filmStorage.addFilm(film);
     }
 
     @PutMapping
     public Film putFilm(@RequestBody Film film) {
         log.info("Обновление фильма {}", film);
-        return storage.updateFilm(film);
+        return filmStorage.updateFilm(film);
     }
 
     @PutMapping("/{id}/like/{userId}")
@@ -57,9 +61,5 @@ public class FilmController {
     public void deleteLike(@PathVariable int id, @PathVariable int userId) {
         log.info("Удаление лайка фильму с id: {}, от пользователя id: {}", id, userId);
         service.removeLike(id, userId);
-    }
-
-    public FilmInMemoryStorage getStorage() {
-        return storage;
     }
 }

@@ -4,7 +4,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
 
-public interface FilmStorage {
+public interface IFilmStorage {
 
     Film addFilm(Film film);
 

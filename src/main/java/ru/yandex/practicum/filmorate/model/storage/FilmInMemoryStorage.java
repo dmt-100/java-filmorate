@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.model.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.interfaces.FilmStorage;
+import ru.yandex.practicum.filmorate.model.interfaces.IFilmStorage;
 import ru.yandex.practicum.filmorate.model.service.Validator;
 import ru.yandex.practicum.filmorate.model.service.IdCounter;
 import ru.yandex.practicum.filmorate.model.exception.ValidationException;
@@ -12,9 +12,28 @@ import java.util.*;
 
 @Slf4j
 @Component
-public class FilmInMemoryStorage implements FilmStorage {
+public class FilmInMemoryStorage implements IFilmStorage {
+    private final Set<Film> films = new HashSet<>();
 
-    private final FilmRepository repository = new FilmRepository();
+    public Film getEqual(Film film) {
+        return films.stream().filter(film::equals).findAny().orElse(null);
+    }
+
+    @Override
+    public Set<Film> getFilms() {
+        return films;
+    }
+
+    @Override
+    public Film getFilmById(int id) {
+        Validator.validateFilmId(films.size(), id);
+        Film film = films
+                .stream()
+                .filter(f -> f.getId() == id)
+                .findFirst()
+                .orElse(null);
+        return film;
+    }
 
     @Override
     public Film addFilm(Film film) {
@@ -36,7 +55,8 @@ public class FilmInMemoryStorage implements FilmStorage {
     public Film updateFilm(Film film) {
         Film filmUpdate = null;
         if (Validator.validateFilm(film)) {
-            Film f = repository.getFilmById(film.getId());
+            Validator.validateFilmId(films.size(), film.getId());
+            Film f = getFilmById(film.getId());
 
             f.setName(film.getName());
             f.setDescription(film.getDescription());
@@ -48,17 +68,6 @@ public class FilmInMemoryStorage implements FilmStorage {
             filmUpdate = f;
         }
         return filmUpdate;
-    }
-
-    @Override
-    public Set<Film> getFilms() {
-        return repository.getFilms();
-    }
-
-    @Override
-    public Film getFilmById(int id) {
-        Validator.validateFilmId(id);
-        return repository.getFilmById(id);
     }
 
 }

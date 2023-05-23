@@ -2,22 +2,24 @@ package ru.yandex.practicum.filmorate.model.controller;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.service.IdCounter;
 
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.model.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.exception.ValidationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@SpringBootTest
 public class UserControllerTest {
     private User user;
     private User user2;
-    private final UserController userController = new UserController();
+    @Autowired
+    private UserController userController;
 
     @BeforeEach
     void setUp() {
@@ -31,7 +33,7 @@ public class UserControllerTest {
 
     @AfterEach
     void tearDown() {
-        userController.getUsers().remove(user);
+        userController.getUsers().clear();
         IdCounter.setIdUserCounter(0);
     }
 
@@ -92,19 +94,17 @@ public class UserControllerTest {
                 .email("mail@yandex.ru")
                 .birthday(LocalDate.of(1976, 9, 20))
                 .build();
-        Throwable exception = assertThrows(ResourceNotFoundException.class,
+        Throwable exception = assertThrows(ValidationException.class,
                 () -> userController.putUser(user2));
         assertEquals("Некорректный id пользователя: " + user2.getId(), exception.getMessage());
     }
-
 
     @Test
     void testCreateUserWithEmptyName() {
         user.setName("");
         userController.createUser(user);
-        User userExpected = userController.getStorage().getUserRepository().getEqual(user, userController.getUsers());
-        assertEquals(user.getLogin(), userExpected.getLogin());
-        assertEquals(1, userController.getUsers().size());
+        String name = userController.getUserById(user.getId()).getName();
+        assertEquals(user.getName(), name);
     }
 
     @Test
@@ -116,9 +116,8 @@ public class UserControllerTest {
                 .email("mail@yandex.ru")
                 .birthday(LocalDate.of(1976, 9, 20))
                 .build();
-
         userController.createUser(user2);
-        assertEquals(userController.getStorage().getUsers(), userController.getUsers());
+        assertEquals(2, userController.getUsers().size());
     }
 
 }

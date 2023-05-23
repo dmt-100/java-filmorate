@@ -1,27 +1,45 @@
 package ru.yandex.practicum.filmorate.model.storage;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.model.interfaces.UserStorage;
+import ru.yandex.practicum.filmorate.model.interfaces.IUserStorage;
 import ru.yandex.practicum.filmorate.model.service.Validator;
 import ru.yandex.practicum.filmorate.model.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.service.IdCounter;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Slf4j
 @Component
-public class UserInMemoryStorage implements UserStorage {
-    private final UserRepository userRepository = new UserRepository();
+public class UserInMemoryStorage implements IUserStorage {
+
+    private final Set<User> users = new LinkedHashSet<>();
+
+    public User getEqual(User user) {
+        return users.stream().filter(user::equals).findAny().orElse(null);
+    }
+
+    public boolean isExist(int id) {
+        boolean result = false;
+        for (User user : users) {
+            if (user.getId() == id) {
+                result = true;
+            }
+        }
+        return result;
+    }
 
     @Override
     public Set<User> getUsers() {
-        return userRepository.getUsers();
+        return users;
     }
 
     @Override
     public User getUserById(int id) {
-        Validator.validateUserId(id);
-        return userRepository.getUsers()
+        Validator.validateUserId(users.size(), id);
+        return getUsers()
                 .stream()
                 .filter(u -> u.getId() == id)
                 .findFirst()
@@ -42,6 +60,7 @@ public class UserInMemoryStorage implements UserStorage {
     public User putUser(User user) {
         User userUpdate = null;
         if (Validator.validateUser(user)) {
+            Validator.validateUserId(users.size(), user.getId());
             for (User u : getUsers()) {
                 if (u.getId() == user.getId()) {
                     u.setEmail(user.getEmail());
@@ -50,7 +69,7 @@ public class UserInMemoryStorage implements UserStorage {
                     u.setBirthday(user.getBirthday());
                     u.setFriends(user.getFriends());
                 } else {
-                    throw new ValidationException("Некорректный Id: " + user.getId());
+                    throw new ValidationException("Некорректный id: " + user.getId());
                 }
             }
             for (User user1 : getUsers()) {
@@ -60,10 +79,6 @@ public class UserInMemoryStorage implements UserStorage {
             }
         }
         return userUpdate;
-    }
-
-    public UserRepository getUserRepository() {
-        return userRepository;
     }
 
 

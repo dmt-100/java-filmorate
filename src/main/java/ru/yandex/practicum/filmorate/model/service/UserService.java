@@ -1,23 +1,26 @@
 package ru.yandex.practicum.filmorate.model.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.storage.UserInMemoryStorage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private final UserInMemoryStorage storage;
 
+    @Autowired
     public UserService(UserInMemoryStorage storage) {
         this.storage = storage;
     }
 
     public User addFriend(int id, int friendId) {
-        Validator.validateUserId(id);
-        Validator.validateUserId(friendId);
+        Validator.validateUserId(storage.getUsers().size(), id);
+        Validator.validateUserId(storage.getUsers().size(), friendId);
         storage.getUserById(id).getFriends().add(friendId);
         storage.getUserById(friendId).getFriends().add(id);
 
@@ -31,8 +34,8 @@ public class UserService {
     }
 
     public Set<User> getCommonFriendsById(int id, int otherId) {
-        Validator.validateUserId(id);
-        Validator.validateUserId(otherId);
+        Validator.validateUserId(storage.getUsers().size(), id);
+        Validator.validateUserId(storage.getUsers().size(), otherId);
         Set<User> result = new LinkedHashSet<>();
         if (storage.getUserById(id).getFriends().size() == 0) {
             return result;
@@ -48,12 +51,13 @@ public class UserService {
     }
 
     public List<User> getFriends(int id) {
-        List<User> users = new ArrayList<>();
-        Validator.validateUserId(id);
-        for (Integer friendId : storage.getUserById(id).getFriends()) {
-            users.add(storage.getUserById(friendId));
-        }
-        return users;
+        Validator.validateUserId(storage.getUsers().size(), id);
+
+        return storage.getUserById(id)
+                .getFriends()
+                .stream()
+                .map(storage::getUserById)
+                .collect(Collectors.toList());
     }
 
 }

@@ -1,9 +1,9 @@
 package ru.yandex.practicum.filmorate.model.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.model.service.Validator;
 import ru.yandex.practicum.filmorate.model.storage.UserInMemoryStorage;
 import ru.yandex.practicum.filmorate.model.service.UserService;
 
@@ -14,9 +14,10 @@ import java.util.Set;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserInMemoryStorage storage = new UserInMemoryStorage();
-    private final UserService userService = new UserService(storage);
-    private final Validator validator = new Validator(storage);
+    @Autowired
+    private UserInMemoryStorage storage;
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public Set<User> getUsers() {
@@ -70,7 +71,4 @@ public class UserController {
         return user;
     }
 
-    public UserInMemoryStorage getStorage() { // только для тестов
-        return storage;
-    }
 }
