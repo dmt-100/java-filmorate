@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.service.IdCounter;
 
@@ -103,7 +104,7 @@ public class FilmControllerTest {
                 .duration(100)
                 .rate(4)
                 .build();
-        Throwable exception = assertThrows(ValidationException.class,
+        Throwable exception = assertThrows(ResourceNotFoundException.class,
                 () -> filmController.putFilm(film2));
         assertEquals("Некорректный id фильма: " + film2.getId(), exception.getMessage());
     }
