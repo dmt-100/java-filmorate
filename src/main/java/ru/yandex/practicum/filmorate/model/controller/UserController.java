@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.model.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.storage.UserInMemoryStorage;
@@ -14,10 +13,13 @@ import java.util.Set;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    @Autowired
-    private UserInMemoryStorage storage;
-    @Autowired
-    private UserService userService;
+    private final UserInMemoryStorage storage;
+    private final UserService userService;
+
+    public UserController(UserInMemoryStorage storage, UserService userService) {
+        this.storage = storage;
+        this.userService = userService;
+    }
 
     @GetMapping
     public Set<User> getUsers() {

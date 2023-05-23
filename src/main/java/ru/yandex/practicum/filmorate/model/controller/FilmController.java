@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.model.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.interfaces.IFilmStorage;
@@ -13,12 +12,13 @@ import java.util.*;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
+    private final IFilmStorage filmStorage;
+    private final FilmService service;
 
-    @Autowired
-    private IFilmStorage filmStorage;
-
-    @Autowired
-    private FilmService service;
+    public FilmController(IFilmStorage filmStorage, FilmService service) {
+        this.filmStorage = filmStorage;
+        this.service = service;
+    }
 
 
     @GetMapping
