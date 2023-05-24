@@ -12,25 +12,23 @@ import java.util.*;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    private final IFilmStorage filmStorage;
     private final FilmService service;
 
-    public FilmController(IFilmStorage filmStorage, FilmService service) {
-        this.filmStorage = filmStorage;
+    public FilmController(FilmService service) {
         this.service = service;
     }
 
 
     @GetMapping
     public Set<Film> getFilms() { // получение всех фильмов.
-        return filmStorage.getFilms();
+        return service.getFilms();
     }
 
     @GetMapping("/{id}")
     @ResponseBody
     public Film getFilmById(@PathVariable int id) {
         log.info("Получение фильма по id: {}", id);
-        return filmStorage.getFilmById(id);
+        return service.getFilmById(id);
     }
 
     @GetMapping("/popular")
@@ -40,15 +38,15 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film createFilm(@RequestBody Film film) { // добавление фильма
+    public Film createFilm(@RequestBody Film film) {
         log.info("Добавление фильма {}", film);
-        return filmStorage.addFilm(film);
+        return service.createFilm(film);
     }
 
     @PutMapping
     public Film putFilm(@RequestBody Film film) {
         log.info("Обновление фильма {}", film);
-        return filmStorage.updateFilm(film);
+        return service.updateFilm(film);
     }
 
     @PutMapping("/{id}/like/{userId}")

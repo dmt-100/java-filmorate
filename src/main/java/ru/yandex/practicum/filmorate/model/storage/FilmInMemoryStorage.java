@@ -36,7 +36,7 @@ public class FilmInMemoryStorage implements IFilmStorage {
     }
 
     @Override
-    public Film addFilm(Film film) {
+    public Film createFilm(Film film) {
         if (getFilms().contains(film)) {
             throw new ValidationException("Фильм " + film + ", уже есть в коллекции.");
         }

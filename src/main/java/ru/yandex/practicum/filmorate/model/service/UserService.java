@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.storage.UserInMemoryStorage;
 
@@ -13,7 +14,6 @@ public class UserService {
 
     private final UserInMemoryStorage storage;
 
-    @Autowired
     public UserService(UserInMemoryStorage storage) {
         this.storage = storage;
     }
@@ -58,6 +58,24 @@ public class UserService {
                 .stream()
                 .map(storage::getUserById)
                 .collect(Collectors.toList());
+    }
+
+    public Set<User> getUsers() {
+        return storage.getUsers();
+    }
+
+    public User getUserById(@PathVariable int id) {
+        return storage.getUserById(id);
+    }
+
+
+    public User createUser(@RequestBody User user) {
+        storage.createUser(user);
+        return user;
+    }
+
+    public User putUser(@RequestBody User user) {
+        return storage.putUser(user);
     }
 
 }

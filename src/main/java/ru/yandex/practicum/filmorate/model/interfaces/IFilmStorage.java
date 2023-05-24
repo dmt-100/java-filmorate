@@ -6,7 +6,7 @@ import java.util.*;
 
 public interface IFilmStorage {
 
-    Film addFilm(Film film);
+    Film createFilm(Film film);
 
     Film updateFilm(Film film);
 

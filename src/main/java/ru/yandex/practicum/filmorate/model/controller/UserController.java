@@ -13,23 +13,21 @@ import java.util.Set;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserInMemoryStorage storage;
     private final UserService userService;
 
-    public UserController(UserInMemoryStorage storage, UserService userService) {
-        this.storage = storage;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping
     public Set<User> getUsers() {
-        return storage.getUsers();
+        return userService.getUsers();
     }
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable int id) {
         log.info("Пользователь {}", id);
-        return storage.getUserById(id);
+        return userService.getUserById(id);
     }
 
     @GetMapping("/{id}/friends")
@@ -45,16 +43,16 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) { // добавление фильма
+    public User createUser(@RequestBody User user) {
         log.info("Пришёл запрос на добавление пользователя {}, количество пользователей: {}", user, getUsers().size());
-        storage.createUser(user);
+        userService.createUser(user);
         return user;
     }
 
     @PutMapping
     public User putUser(@RequestBody User user) {
         log.info("Обновление пользователя {}", user);
-        return storage.putUser(user);
+        return userService.putUser(user);
     }
 
     @PutMapping("/{id}/friends/{friendId}")

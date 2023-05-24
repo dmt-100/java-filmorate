@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.model.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.storage.FilmInMemoryStorage;
@@ -15,7 +15,6 @@ public class FilmService {
     private final FilmInMemoryStorage filmStorage;
     private final UserInMemoryStorage userStorage;
 
-    @Autowired
     public FilmService(FilmInMemoryStorage filmStorage, UserInMemoryStorage userStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
@@ -52,5 +51,22 @@ public class FilmService {
         film.getLikes().add(userId);
         return film;
     }
+
+    public Set<Film> getFilms() {
+        return filmStorage.getFilms();
+    }
+
+    public Film getFilmById(@PathVariable int id) {
+        return filmStorage.getFilmById(id);
+    }
+
+    public Film createFilm(@RequestBody Film film) {
+        return filmStorage.createFilm(film);
+    }
+
+    public Film updateFilm(@RequestBody Film film) {
+        return filmStorage.updateFilm(film);
+    }
+
 
 }

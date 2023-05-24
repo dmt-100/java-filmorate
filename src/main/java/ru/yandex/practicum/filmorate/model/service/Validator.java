@@ -31,8 +31,8 @@ public class Validator {
             throw new ValidationException("Название фильма не должно быть пустым, " + name.isBlank());
 
         } else if (description.length() > maxDescriptionLength) {
-            log.info("Максимальное количество букв в описании фильма не должно превышать " +
-                    maxDescriptionLength + ", description.length: {}", description.length());
+            log.info("Максимальное количество букв в описании фильма не должно превышать {}," +
+                    " description.length: {}", maxDescriptionLength, description.length());
 
             throw new ValidationException("Максимальное количество букв в описании фильма не должно превышать " +
                     maxDescriptionLength + ", description.length(): " + description.length());
@@ -79,7 +79,6 @@ public class Validator {
         if (user.getFriends() == null) {
             user.setFriends(new HashSet<>());
         }
-
         return true;
     }
 
