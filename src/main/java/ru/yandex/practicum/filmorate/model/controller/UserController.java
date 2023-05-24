@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.model.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.model.storage.UserInMemoryStorage;
 import ru.yandex.practicum.filmorate.model.service.UserService;
 
 import java.util.List;

@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.model.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.interfaces.IFilmStorage;
 import ru.yandex.practicum.filmorate.model.service.FilmService;
 
 import java.util.*;
@@ -20,7 +19,7 @@ public class FilmController {
 
 
     @GetMapping
-    public Set<Film> getFilms() { // получение всех фильмов.
+    public Set<Film> getFilms() {
         return service.getFilms();
     }
 
