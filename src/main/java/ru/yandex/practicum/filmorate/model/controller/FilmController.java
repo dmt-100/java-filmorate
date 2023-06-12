@@ -3,56 +3,60 @@ package ru.yandex.practicum.filmorate.model.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.repository.FilmRepository;
-import ru.yandex.practicum.filmorate.model.service.FilmValidator;
-import ru.yandex.practicum.filmorate.model.service.IdCounter;
+import ru.yandex.practicum.filmorate.model.service.FilmService;
 
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @RestController
 @RequestMapping("/films")
 public class FilmController {
+    private final FilmService service;
 
-    FilmRepository filmRepository = new FilmRepository();
-    FilmValidator filmValidator = new FilmValidator();
+    public FilmController(FilmService service) {
+        this.service = service;
+    }
+
 
     @GetMapping
-    public Set<Film> getFilms() { // получение всех фильмов.
-        return filmRepository.getFilms();
+    public Set<Film> getFilms() {
+        return service.getFilms();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public Film getFilmById(@PathVariable int id) {
+        log.info("Получение фильма по id: {}", id);
+        return service.getFilmById(id);
+    }
+
+    @GetMapping("/popular")
+    public Set<Film> getPopularFilms(@RequestParam(value = "count", required = false) @PathVariable Integer count) {
+        log.info("Получение наиболее популярных фильмов: {}", count);
+        return service.getMostPopularFilms(Objects.requireNonNullElse(count, 10));
     }
 
     @PostMapping
-    public Film createFilm(@RequestBody Film film) { // добавление фильма
-        log.info("Пришел запрос на добавление фильма {}", film);
-        film.setId(IdCounter.increaseFilmId());
-        if (getFilms().contains(film)) {
-            throw new ValidationException("Фильм " + film + ", уже есть в коллекции.");
-        }
-        if (filmValidator.validate(filmRepository, film)) {
-            getFilms().add(film);
-            log.info("Добавление фильма {}, количество фильмов: {}", film, getFilms().size());
-        }
-        return film;
+    public Film createFilm(@RequestBody Film film) {
+        log.info("Добавление фильма {}", film);
+        return service.createFilm(film);
     }
 
     @PutMapping
     public Film putFilm(@RequestBody Film film) {
-        Film result = null;
-        if (filmValidator.validate(filmRepository, film)) {
-            for (Film f : filmRepository.getFilms()) {
-                if (f.getId() == film.getId()) {
-                    f.setName(film.getName());
-                    f.setDescription(film.getDescription());
-                    f.setReleaseDate(film.getReleaseDate());
-                    f.setDuration(film.getDuration());
-                    f.setRate(film.getRate());
-                    result = f;
-                }
-            }
-        }
-        return result;
+        log.info("Обновление фильма {}", film);
+        return service.updateFilm(film);
     }
 
+    @PutMapping("/{id}/like/{userId}")
+    public Film addLikeToFilm(@PathVariable int id, @PathVariable int userId) {
+        log.info("Добавление лайка фильму с id: {}, от пользователя id: {}", id, userId);
+        return service.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@PathVariable int id, @PathVariable int userId) {
+        log.info("Удаление лайка фильму с id: {}, от пользователя id: {}", id, userId);
+        service.removeLike(id, userId);
+    }
 }
