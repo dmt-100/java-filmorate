@@ -5,13 +5,17 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmStorage;
-import ru.yandex.practicum.filmorate.exeption.ResourceNotFoundException;
-import ru.yandex.practicum.filmorate.exeption.ValidationException;
+import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.IdCounter;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+//import ru.yandex.practicum.filmorate.dao.FilmStorage;
+//import ru.yandex.practicum.filmorate.service.IdCounter;
+
 
 @Slf4j
 @Data
@@ -104,12 +108,6 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     private void addNewId(Film film) {
         film.setId(IdCounter.increaseFilmId());
-//        int id = filmsIdCount + 1;
-//        while (films.containsKey(id)) {
-//            id += id;
-//        }
-//        film.setId(id);
-//        filmsIdCount = id;
     }
 
     private boolean idValidation(@NonNull int id) {

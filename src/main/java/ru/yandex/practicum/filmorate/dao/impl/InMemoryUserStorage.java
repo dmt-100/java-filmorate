@@ -5,8 +5,8 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.UserStorage;
-import ru.yandex.practicum.filmorate.exeption.ResourceNotFoundException;
-import ru.yandex.practicum.filmorate.exeption.ValidationException;
+import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.IdCounter;
 
@@ -120,11 +120,5 @@ public class InMemoryUserStorage implements UserStorage {
 
     private void addNewId(User user) {
         user.setId(IdCounter.increaseUserId());
-//        int id = usersIdCount + 1;
-//        while (users.containsKey(id)) {
-//            id += id;
-//        }
-//        user.setId(id);
-//        usersIdCount = id;
     }
 }

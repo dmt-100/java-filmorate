@@ -25,7 +25,7 @@ class FilmDbStorageTest {
 
     @Test
     void listFilms() {
-        assertEquals(4, filmDbStorage.listFilms().size());
+        assertEquals(4, filmDbStorage.allFilms().size());
     }
 
     @Test
@@ -49,14 +49,14 @@ class FilmDbStorageTest {
         film.setRate(5);
         film.setMpa(mpaRatingDao.getMpaRatingById(1));
         filmDbStorage.createFilm(film);
-        List<Film> films = filmDbStorage.listFilms();
+        List<Film> films = filmDbStorage.allFilms();
         assertEquals(5, films.size());
     }
 
     @Test
     void updateFilm() {
         Film film = new Film();
-        film.setFilmId(1);
+        film.setId(1);
         film.setName("filmUpdated");
         film.setDescription("description");
         film.setReleaseDate(LocalDate.ofEpochDay(1985 - 5 - 5));
