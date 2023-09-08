@@ -35,7 +35,7 @@ class FilmDaoStorageTest {
         assertThat(filmOptional)
                 .isPresent()
                 .hasValueSatisfying(film ->
-                        assertThat(film).hasFieldOrPropertyWithValue("filmId", 1)
+                        assertThat(film).hasFieldOrPropertyWithValue("id", 1)
                 );
     }
 
