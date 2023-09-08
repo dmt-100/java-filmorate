@@ -42,7 +42,7 @@ public class InMemoryUserStorage implements UserStorage {
     public User createUser(@NonNull User user) {
         addNewId(user);
         if (Validator.validateUser(user))
-        users.put(user.getId(), user);
+            users.put(user.getId(), user);
         return user;
     }
 

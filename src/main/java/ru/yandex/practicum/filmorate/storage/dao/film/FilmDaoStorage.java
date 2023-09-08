@@ -36,7 +36,8 @@ public class FilmDaoStorage implements FilmStorage {
             "SET name = ?, description = ?, release_date = ?, duration = ?, rating_id = ? " +
             "WHERE film_id = ?";
     private static final String DELETE_FILM_BY_ID = "DELETE FROM films WHERE film_id = ?";
-    private static final String DELETE_FILM_GENRES = "DELETE FROM film_genres WHERE film_id = ?";private static final String GET_MOST_POPULAR_FILMS = "SELECT * FROM films f " +
+    private static final String DELETE_FILM_GENRES = "DELETE FROM film_genres WHERE film_id = ?";
+    private static final String GET_MOST_POPULAR_FILMS = "SELECT * FROM films f " +
             "LEFT JOIN (SELECT film_id, COUNT(*) likes_count FROM likes GROUP BY film_id) l ON f.film_id = l.film_id " +
             "LEFT JOIN rating r ON r.id = f.rating_id " +
             "ORDER BY l.likes_count DESC LIMIT ?";
