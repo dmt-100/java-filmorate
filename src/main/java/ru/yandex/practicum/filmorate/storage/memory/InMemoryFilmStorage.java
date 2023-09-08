@@ -1,10 +1,11 @@
-package ru.yandex.practicum.filmorate.dao.impl;
+package ru.yandex.practicum.filmorate.storage.memory;
 
 import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dao.FilmStorage;
+import ru.yandex.practicum.filmorate.service.Validator;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -12,9 +13,6 @@ import ru.yandex.practicum.filmorate.service.IdCounter;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-//import ru.yandex.practicum.filmorate.dao.FilmStorage;
-//import ru.yandex.practicum.filmorate.service.IdCounter;
 
 
 @Slf4j
@@ -43,20 +41,24 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film createFilm(@NonNull Film film) {
         addNewId(film);
-        films.put(film.getId(), film);
-        log.debug("Сохранен фильм: {}", film);
+        if (Validator.validateFilm(film)) {
+            films.put(film.getId(), film);
+            log.debug("Сохранен фильм: {}", film);
+        }
         return film;
     }
 
     @Override
     public Film updateFilm(@NonNull Film film) {
-        if (films.containsKey(film.getId())) {
+        if (Validator.validateFilm(film) && Validator.validateFilmId(films.size(), film.getId())) {
             films.put(film.getId(), film);
-            return film;
-        } else {
-            log.warn("Ошибка при обновлении фильма: {}", film);
-            throw new ResourceNotFoundException("Ошибка изменения фильма, проверьте корректность данных.");
         }
+        return film;
+    }
+
+    @Override
+    public void deleteFilm(int id) {
+
     }
 
     @Override

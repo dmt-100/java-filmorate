@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -18,7 +18,7 @@ import java.util.List;
 public class FilmService implements FilmStorage {
     private final FilmStorage filmStorage;
 
-    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
+    public FilmService(@Qualifier("filmDaoStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -28,6 +28,18 @@ public class FilmService implements FilmStorage {
 
     public void deleteLike(int id, int userId) {
         filmStorage.deleteLike(id, userId);
+    }
+
+    @Override
+    public Film createFilm(@Valid Film film) {
+        if (filmValidation(film)) {
+            filmStorage.createFilm(film);
+            log.debug("Сохранен фильм: {}", film);
+            return film;
+        } else {
+            log.warn("Ошибка при создании фильма: {}", film);
+            throw new ValidationException("Ошибка создания фильма, проверьте корректность данных.");
+        }
     }
 
     public List<Film> getMostPopularFilms(int count) {
@@ -55,18 +67,6 @@ public class FilmService implements FilmStorage {
     }
 
     @Override
-    public Film createFilm(@Valid Film film) {
-        if (filmValidation(film)) {
-            filmStorage.createFilm(film);
-            log.debug("Сохранен фильм: {}", film);
-            return film;
-        } else {
-            log.warn("Ошибка при создании фильма: {}", film);
-            throw new ValidationException("Ошибка создания фильма, проверьте корректность данных.");
-        }
-    }
-
-    @Override
     public Film updateFilm(@NonNull Film film) {
         if (getFilmById(film.getId()).getId() == film.getId() && filmValidation(film)) {
             filmStorage.updateFilm(film);
@@ -74,7 +74,18 @@ public class FilmService implements FilmStorage {
             return film;
         } else {
             log.warn("Ошибка при обновлении фильма: {}", film);
-            throw new ResourceNotFoundException("Ошибка изменения фильма, проверьте корректность данных.");
+            throw new ResourceNotFoundException("Ошибка при изменении фильма, проверьте корректность данных.");
+        }
+    }
+
+    @Override
+    public void deleteFilm(int id) {
+        if (!filmStorage.getFilmById(id).equals(null)) {
+            filmStorage.deleteFilm(id);
+            log.warn("Фильм удалён.");
+        } else {
+            log.warn("Ошибка при удалении фильма с id: {}", filmStorage.getFilmById(id));
+            throw new ResourceNotFoundException("Ошибка при удалении фильма, проверьте корректность id фильма.");
         }
     }
 

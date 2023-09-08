@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dao.impl;
+package ru.yandex.practicum.filmorate.storage.dao.film;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,13 +8,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dao.FilmStorage;
-import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MpaRating;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import javax.validation.ValidationException;
 import java.sql.Date;
@@ -27,17 +26,17 @@ import java.util.stream.Collectors;
 @Slf4j
 @AllArgsConstructor
 @Component
-public class FilmDbStorage implements FilmStorage {
-    private static final String GET_ALL_FILMS = "SELECT * FROM films f LEFT JOIN rating r ON r.id = f.rating_id";
-    private static final String GET_FILM_BY_ID = "SELECT * FROM films f LEFT JOIN rating r ON r.id = f.rating_id WHERE film_id = ?";
+public class FilmDaoStorage implements FilmStorage {
     private static final String CREATE_FILM = "INSERT INTO films " +
             "(name, description, release_date, duration, rating_id) " +
             "VALUES (?, ?, ?, ?, ?)";
-    private static final String DELETE_FILM_GENRES = "DELETE FROM film_genres WHERE film_id = ?";
+    private static final String GET_ALL_FILMS = "SELECT * FROM films f LEFT JOIN rating r ON r.id = f.rating_id";
+    private static final String GET_FILM_BY_ID = "SELECT * FROM films f LEFT JOIN rating r ON r.id = f.rating_id WHERE film_id = ?";
     private static final String UPDATE_FILM = "UPDATE films " +
             "SET name = ?, description = ?, release_date = ?, duration = ?, rating_id = ? " +
             "WHERE film_id = ?";
-    private static final String GET_MOST_POPULAR_FILMS = "SELECT * FROM films f " +
+    private static final String DELETE_FILM_BY_ID = "DELETE FROM films WHERE film_id = ?";
+    private static final String DELETE_FILM_GENRES = "DELETE FROM film_genres WHERE film_id = ?";private static final String GET_MOST_POPULAR_FILMS = "SELECT * FROM films f " +
             "LEFT JOIN (SELECT film_id, COUNT(*) likes_count FROM likes GROUP BY film_id) l ON f.film_id = l.film_id " +
             "LEFT JOIN rating r ON r.id = f.rating_id " +
             "ORDER BY l.likes_count DESC LIMIT ?";
@@ -87,6 +86,11 @@ public class FilmDbStorage implements FilmStorage {
         jdbcTemplate.update(UPDATE_FILM, film.getName(), film.getDescription(),
                 Date.valueOf(film.getReleaseDate()), film.getDuration(), film.getMpa().getId(), film.getId());
         return addGenreToFilm(film);
+    }
+
+    @Override
+    public void deleteFilm(int id) {
+        jdbcTemplate.update(DELETE_FILM_BY_ID, id);
     }
 
     @Override

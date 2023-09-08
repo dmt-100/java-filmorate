@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dao.impl;
+package ru.yandex.practicum.filmorate.storage.dao.user;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -19,18 +19,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class UserDbStorageTest {
+class UserDaoStorageTest {
 
-    private final UserDbStorage userDbStorage;
+    private final UserDaoStorage userDaoStorage;
 
     @Test
     void listUsers() {
-        assertEquals(3, userDbStorage.listUsers().size());
+        assertEquals(3, userDaoStorage.listUsers().size());
     }
 
     @Test
     void getUserById() {
-        Optional<User> userOptional = Optional.ofNullable(userDbStorage.getUserById(1));
+        Optional<User> userOptional = Optional.ofNullable(userDaoStorage.getUserById(1));
 
         assertThat(userOptional)
                 .isPresent()
@@ -46,8 +46,8 @@ class UserDbStorageTest {
         user.setLogin("login4");
         user.setBirthday(LocalDate.ofEpochDay(1985 - 5 - 5));
         user.setName("name4");
-        userDbStorage.createUser(user);
-        assertEquals(4, userDbStorage.listUsers().size());
+        userDaoStorage.createUser(user);
+        assertEquals(4, userDaoStorage.listUsers().size());
     }
 
     @Test
@@ -58,30 +58,30 @@ class UserDbStorageTest {
         user.setLogin("login4");
         user.setBirthday(LocalDate.ofEpochDay(1985 - 5 - 5));
         user.setName("update");
-        userDbStorage.updateUser(user);
-        assertEquals("update", userDbStorage.getUserById(1).getName());
+        userDaoStorage.updateUser(user);
+        assertEquals("update", userDaoStorage.getUserById(1).getName());
     }
 
     @Test
     void addFriendPlusGetUserFriends() {
-        userDbStorage.addFriend(1, 2);
-        assertEquals(1, userDbStorage.getUserFriends(1).size());
+        userDaoStorage.addFriend(1, 2);
+        assertEquals(1, userDaoStorage.getUserFriends(1).size());
     }
 
     @Test
     void deleteFriend() {
-        userDbStorage.addFriend(1, 2);
-        userDbStorage.addFriend(1, 3);
-        userDbStorage.deleteFriend(1, 3);
-        assertEquals(1, userDbStorage.getUserFriends(1).size());
+        userDaoStorage.addFriend(1, 2);
+        userDaoStorage.addFriend(1, 3);
+        userDaoStorage.deleteFriend(1, 3);
+        assertEquals(1, userDaoStorage.getUserFriends(1).size());
     }
 
     @Test
     void getCommonFriendList() {
-        userDbStorage.addFriend(1, 2);
-        userDbStorage.addFriend(1, 3);
-        userDbStorage.addFriend(2, 3);
-        List<User> friends = userDbStorage.getCommonFriendList(1, 2);
+        userDaoStorage.addFriend(1, 2);
+        userDaoStorage.addFriend(1, 3);
+        userDaoStorage.addFriend(2, 3);
+        List<User> friends = userDaoStorage.getCommonFriendList(1, 2);
         assertEquals(3, friends.get(0).getId());
     }
 }

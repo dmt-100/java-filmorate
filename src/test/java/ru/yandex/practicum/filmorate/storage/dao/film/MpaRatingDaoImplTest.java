@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dao.impl;
+package ru.yandex.practicum.filmorate.storage.dao.film;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -13,17 +13,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class GenreDaoImplTest {
+class MpaRatingDaoImplTest {
 
-    private final GenreDaoImpl genreDao;
+    private final MpaRatingDaoImpl mpaRatingDao;
 
     @Test
-    void getGenres() {
-        assertEquals(6, genreDao.getGenres().size());
+    void getMpaRatings() {
+        assertEquals(5, mpaRatingDao.getMpaRatings().size());
     }
 
     @Test
-    void getGenreById() {
-        assertEquals("Комедия", genreDao.getGenreById(1).getName());
+    void getMpaRatingById() {
+        assertEquals("G", mpaRatingDao.getMpaRatingById(1).getTitle());
     }
 }

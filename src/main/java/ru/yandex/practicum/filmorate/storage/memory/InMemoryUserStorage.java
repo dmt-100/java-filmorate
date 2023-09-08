@@ -1,10 +1,11 @@
-package ru.yandex.practicum.filmorate.dao.impl;
+package ru.yandex.practicum.filmorate.storage.memory;
 
 import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dao.UserStorage;
+import ru.yandex.practicum.filmorate.service.Validator;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -40,19 +41,17 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User createUser(@NonNull User user) {
         addNewId(user);
+        if (Validator.validateUser(user))
         users.put(user.getId(), user);
         return user;
     }
 
     @Override
     public User updateUser(@NonNull User user) {
-        if (users.containsKey(user.getId())) {
+        if (Validator.validateUser(user) && Validator.validateUserId(users.size(), user.getId())) {
             users.put(user.getId(), user);
-            return user;
-        } else {
-            log.warn("Ошибка при обновлении пользователя: {}", user);
-            throw new ResourceNotFoundException("Ошибка обновления пользователя, проверьте корректность данных.");
         }
+        return user;
     }
 
     @Override

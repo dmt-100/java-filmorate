@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.storage.dao.user;
 
 public interface FriendDao {
     void addFriend(int id, int friendId);
