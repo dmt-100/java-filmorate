@@ -47,7 +47,6 @@ public class FilmDaoStorage implements FilmStorage {
     private static final String ADD_GENRE_TO_FILM = "INSERT INTO film_genres (film_id, id) VALUES (?, ?)";
 
     private final JdbcTemplate jdbcTemplate;
-
     private final UserService userService;
     private final LikeDao likeDao;
 

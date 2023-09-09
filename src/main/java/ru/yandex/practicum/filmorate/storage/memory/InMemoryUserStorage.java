@@ -4,12 +4,12 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.service.Validator;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.IdCounter;
+import ru.yandex.practicum.filmorate.service.UserIdCounter;
+import ru.yandex.practicum.filmorate.service.Validator;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 
@@ -17,12 +17,13 @@ import java.util.*;
 @Data
 @Component
 public class InMemoryUserStorage implements UserStorage {
-    private int usersIdCount = 0;
+    private final Validator validator;
+    private final UserIdCounter userIdCounter;
     private final Map<Integer, User> users = new HashMap<>();
     private final Map<User, HashSet<Integer>> friends = new HashMap<>();
 
     @Override
-    public List<User> listUsers() {
+    public List<User> allUsers() {
         log.debug("Текущее количество пользователей: {}", users.size());
         return new ArrayList<>(users.values());
     }
@@ -40,15 +41,15 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User createUser(@NonNull User user) {
-        addNewId(user);
-        if (Validator.validateUser(user))
+        user.setId(userIdCounter.increaseUserId());
+        if (validator.validateUser(user))
             users.put(user.getId(), user);
         return user;
     }
 
     @Override
     public User updateUser(@NonNull User user) {
-        if (Validator.validateUser(user) && Validator.validateUserId(users.size(), user.getId())) {
+        if (validator.validateUser(user) && validator.validateUserId(users.size(), user.getId())) {
             users.put(user.getId(), user);
         }
         return user;
@@ -117,7 +118,4 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    private void addNewId(User user) {
-        user.setId(IdCounter.increaseUserId());
-    }
 }

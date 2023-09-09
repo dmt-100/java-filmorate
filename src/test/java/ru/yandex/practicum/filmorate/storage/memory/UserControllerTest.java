@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.IdCounter;
-import ru.yandex.practicum.filmorate.storage.memory.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.service.UserIdCounter;
 
 import java.time.LocalDate;
 
@@ -23,6 +22,8 @@ public class UserControllerTest {
     @Autowired
     private InMemoryUserStorage inMemoryUserStorage;
 
+    private UserIdCounter userIdCounter;
+
     @BeforeEach
     void setUp() {
         user = new User();
@@ -34,8 +35,9 @@ public class UserControllerTest {
 
     @AfterEach
     void tearDown() {
-        inMemoryUserStorage.listUsers().clear();
-        IdCounter.setIdUserCounter(0);
+        userIdCounter = new UserIdCounter();
+        inMemoryUserStorage.getUsers().clear();
+        userIdCounter.setIdUserCounter(0);
     }
 
     @Test
@@ -82,7 +84,7 @@ public class UserControllerTest {
         user2.setBirthday(LocalDate.of(1976, 9, 20));
         inMemoryUserStorage.updateUser(user2);
         assertEquals(user2, user2);
-        assertEquals(1, inMemoryUserStorage.listUsers().size());
+        assertEquals(1, inMemoryUserStorage.allUsers().size());
     }
 
     @Test
@@ -113,7 +115,6 @@ public class UserControllerTest {
 
     @Test
     void testGetUsers() {
-        setUp();
         inMemoryUserStorage.createUser(user);
         User user2 = new User();
         user2.setLogin("doloreUpdate");
@@ -121,7 +122,7 @@ public class UserControllerTest {
         user2.setEmail("mail@yandex.ru");
         user2.setBirthday(LocalDate.of(1976, 9, 20));
         inMemoryUserStorage.createUser(user2);
-        assertEquals(2, inMemoryUserStorage.listUsers().size());
+        assertEquals(2, inMemoryUserStorage.allUsers().size());
     }
 
 }

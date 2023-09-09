@@ -25,7 +25,7 @@ class UserDaoStorageTest {
 
     @Test
     void listUsers() {
-        assertEquals(3, userDaoStorage.listUsers().size());
+        assertEquals(3, userDaoStorage.allUsers().size());
     }
 
     @Test
@@ -47,7 +47,7 @@ class UserDaoStorageTest {
         user.setBirthday(LocalDate.ofEpochDay(1985 - 5 - 5));
         user.setName("name4");
         userDaoStorage.createUser(user);
-        assertEquals(4, userDaoStorage.listUsers().size());
+        assertEquals(4, userDaoStorage.allUsers().size());
     }
 
     @Test

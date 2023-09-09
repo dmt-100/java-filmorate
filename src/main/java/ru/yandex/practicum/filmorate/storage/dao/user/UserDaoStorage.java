@@ -37,7 +37,7 @@ public class UserDaoStorage implements UserStorage {
     private final FriendDao friendDao;
 
     @Override
-    public List<User> listUsers() {
+    public List<User> allUsers() {
         return jdbcTemplate.query(GET_ALL_USERS, this::mapRowToUser);
     }
 

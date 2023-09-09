@@ -17,9 +17,11 @@ import java.util.List;
 @Service
 public class FilmService implements FilmStorage {
     private final FilmStorage filmStorage;
+    private final Validator validator;
 
-    public FilmService(@Qualifier("filmDaoStorage") FilmStorage filmStorage) {
+    public FilmService(@Qualifier("filmDaoStorage") FilmStorage filmStorage, Validator validator) {
         this.filmStorage = filmStorage;
+        this.validator = validator;
     }
 
     public void addLike(int id, int userId) {
@@ -32,14 +34,11 @@ public class FilmService implements FilmStorage {
 
     @Override
     public Film createFilm(@Valid Film film) {
-        if (filmValidation(film)) {
+        if (validator.validateFilm(film)) {
             filmStorage.createFilm(film);
             log.debug("Сохранен фильм: {}", film);
-            return film;
-        } else {
-            log.warn("Ошибка при создании фильма: {}", film);
-            throw new ValidationException("Ошибка создания фильма, проверьте корректность данных.");
         }
+        return film;
     }
 
     public List<Film> getMostPopularFilms(int count) {
@@ -68,7 +67,9 @@ public class FilmService implements FilmStorage {
 
     @Override
     public Film updateFilm(@NonNull Film film) {
-        if (getFilmById(film.getId()).getId() == film.getId() && filmValidation(film)) {
+        if (getFilmById(film.getId()).getId() == film.getId()
+                && validator.validateFilm(film)
+                && validator.validateFilmId(filmStorage.allFilms().size(), film.getId())) {
             filmStorage.updateFilm(film);
             log.debug("Обновлен фильм: {}", film);
             return film;
@@ -80,7 +81,7 @@ public class FilmService implements FilmStorage {
 
     @Override
     public void deleteFilm(int id) {
-        if (!filmStorage.getFilmById(id).equals(null)) {
+        if (id > 0) {
             filmStorage.deleteFilm(id);
             log.warn("Фильм удалён.");
         } else {
@@ -89,11 +90,4 @@ public class FilmService implements FilmStorage {
         }
     }
 
-    public boolean filmValidation(@NonNull Film film) {
-        if (Validator.validateFilm(film)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.IdCounter;
+import ru.yandex.practicum.filmorate.service.FilmIdCounter;
 
 import java.time.LocalDate;
 
@@ -20,6 +20,7 @@ public class FilmControllerTest {
     private Film film2;
     @Autowired
     private InMemoryFilmStorage inMemoryFilmStorage;
+    private FilmIdCounter filmIdCounter;
 
     @BeforeEach
     void setUp() {
@@ -33,8 +34,9 @@ public class FilmControllerTest {
 
     @AfterEach
     void tearDown() {
+        filmIdCounter = new FilmIdCounter();
         inMemoryFilmStorage.getFilms().clear();
-        IdCounter.setIdFilmCounter(0);
+        filmIdCounter.setIdFilmCounter(0);
     }
 
     @Test

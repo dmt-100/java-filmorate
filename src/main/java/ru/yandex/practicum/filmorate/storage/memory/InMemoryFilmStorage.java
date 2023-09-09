@@ -4,12 +4,12 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.service.Validator;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.IdCounter;
+import ru.yandex.practicum.filmorate.service.FilmIdCounter;
+import ru.yandex.practicum.filmorate.service.Validator;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 public class InMemoryFilmStorage implements FilmStorage {
 
     private final InMemoryUserStorage inMemoryUserStorage;
+    private final Validator validator;
+    private final FilmIdCounter filmIdCounter;
     private int filmsIdCount = 0;
     private final Map<Integer, Film> films = new HashMap<>();
     private Map<Integer, List<Integer>> likes = new HashMap<>();
@@ -40,8 +42,8 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film createFilm(@NonNull Film film) {
-        addNewId(film);
-        if (Validator.validateFilm(film)) {
+        film.setId(filmIdCounter.increaseFilmId());
+        if (validator.validateFilm(film)) {
             films.put(film.getId(), film);
             log.debug("Сохранен фильм: {}", film);
         }
@@ -50,7 +52,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(@NonNull Film film) {
-        if (Validator.validateFilm(film) && Validator.validateFilmId(films.size(), film.getId())) {
+        if (validator.validateFilm(film) && validator.validateFilmId(films.size(), film.getId())) {
             films.put(film.getId(), film);
         }
         return film;
@@ -106,10 +108,6 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.warn("Ошибка запроса списка популярных фильмов.");
             throw new ValidationException("Ошибка запроса списка популярных фильмов, проверьте корректность данных.");
         }
-    }
-
-    private void addNewId(Film film) {
-        film.setId(IdCounter.increaseFilmId());
     }
 
     private boolean idValidation(@NonNull int id) {

@@ -17,9 +17,40 @@ import java.util.List;
 public class UserService implements UserStorage {
 
     private final UserStorage userStorage;
-
-    public UserService(@Qualifier("userDaoStorage") UserStorage userStorage) {
+    private final Validator validator;
+    private final UserIdCounter userIdCounter;
+    public UserService(@Qualifier("userDaoStorage") UserStorage userStorage, Validator validator, UserIdCounter userIdCounter) {
         this.userStorage = userStorage;
+        this.validator = validator;
+        this.userIdCounter = userIdCounter;
+    }
+
+
+    @Override
+    public User createUser(@NonNull User user) {
+        if (validator.validateUser(user)) {
+            if (user.getName().isBlank())
+                user.setName(user.getLogin());
+            log.debug("Сохранен пользователь: {}", user);
+            return userStorage.createUser(user);
+        } else {
+            log.warn("Ошибка при создании пользователя: {}", user);
+            throw new ValidationException("Ошибка создания пользователя, проверьте корректность данных.");
+        }
+    }
+
+    @Override
+    public User getUserById(int id) {
+        try {
+            return userStorage.getUserById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException("Ошибка запроса пользователя, проверьте корректность данных.");
+        }
+    }
+
+    @Override
+    public List<User> allUsers() {
+        return userStorage.allUsers();
     }
 
     public void addFriend(int id, int friendId) {
@@ -55,35 +86,10 @@ public class UserService implements UserStorage {
     }
 
     @Override
-    public List<User> listUsers() {
-        return userStorage.listUsers();
-    }
-
-    @Override
-    public User getUserById(int id) {
-        try {
-            return userStorage.getUserById(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotFoundException("Ошибка запроса пользователя, проверьте корректность данных.");
-        }
-    }
-
-    @Override
-    public User createUser(@NonNull User user) {
-        if (userValidation(user)) {
-            if (user.getName().isBlank())
-                user.setName(user.getLogin());
-            log.debug("Сохранен пользователь: {}", user);
-            return userStorage.createUser(user);
-        } else {
-            log.warn("Ошибка при создании пользователя: {}", user);
-            throw new ValidationException("Ошибка создания пользователя, проверьте корректность данных.");
-        }
-    }
-
-    @Override
     public User updateUser(@NonNull User user) {
-        if (getUserById(user.getId()).getId() == user.getId() && userValidation(user)) {
+        if (getUserById(user.getId()).getId() == user.getId()
+                && validator.validateUser(user)
+                && validator.validateUserId(userStorage.allUsers().size(), user.getId())) {
             log.debug("Обновлен пользователь: {}", user);
             return userStorage.updateUser(user);
         } else {
@@ -92,9 +98,6 @@ public class UserService implements UserStorage {
         }
     }
 
-    public boolean userValidation(User user) {
-        return !user.getLogin().contains(" ");
-    }
 }
 
 
