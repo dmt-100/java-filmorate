@@ -45,7 +45,7 @@ public class Validator {
         return true;
     }
 
-    public  boolean validateUser(User user) {
+    public boolean validateUser(User user) {
         final String login = user.getLogin();
         final String email = user.getEmail();
         final LocalDate birthDay = user.getBirthday();

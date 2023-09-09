@@ -19,6 +19,7 @@ public class UserService implements UserStorage {
     private final UserStorage userStorage;
     private final Validator validator;
     private final UserIdCounter userIdCounter;
+
     public UserService(@Qualifier("userDaoStorage") UserStorage userStorage, Validator validator, UserIdCounter userIdCounter) {
         this.userStorage = userStorage;
         this.validator = validator;

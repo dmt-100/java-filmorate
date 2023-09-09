@@ -9,6 +9,7 @@ public class FilmIdCounter {
     public int increaseFilmId() {
         return ++id;
     }
+
     // only tests
     public void setIdFilmCounter(int id) {
         this.id = id;

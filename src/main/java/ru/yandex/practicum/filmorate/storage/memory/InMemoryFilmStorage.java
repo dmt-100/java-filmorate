@@ -20,13 +20,11 @@ import java.util.stream.Collectors;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
 
+    private final Map<Integer, Film> films = new HashMap<>();
+    private Map<Integer, List<Integer>> likes = new HashMap<>();
     private final InMemoryUserStorage inMemoryUserStorage;
     private final Validator validator;
     private final FilmIdCounter filmIdCounter;
-    private int filmsIdCount = 0;
-    private final Map<Integer, Film> films = new HashMap<>();
-    private Map<Integer, List<Integer>> likes = new HashMap<>();
-
 
     @Override
     public List<Film> allFilms() {

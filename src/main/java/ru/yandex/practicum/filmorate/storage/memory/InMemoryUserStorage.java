@@ -17,10 +17,11 @@ import java.util.*;
 @Data
 @Component
 public class InMemoryUserStorage implements UserStorage {
-    private final Validator validator;
-    private final UserIdCounter userIdCounter;
+
     private final Map<Integer, User> users = new HashMap<>();
     private final Map<User, HashSet<Integer>> friends = new HashMap<>();
+    private final Validator validator;
+    private final UserIdCounter userIdCounter;
 
     @Override
     public List<User> allUsers() {
