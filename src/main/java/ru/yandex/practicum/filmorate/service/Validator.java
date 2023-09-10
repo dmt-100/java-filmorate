@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -78,14 +79,14 @@ public class Validator {
     public void validateFilmId(int filmsSize, int id) {
         log.info("Проверка на корректность id фильма: {}", id);
         if (id < 0 || id > filmsSize + 1) {
-            throw new ValidationException("Некорректный идентификатор фильма.");
+            throw new ResourceNotFoundException("Некорректный идентификатор фильма.");
         }
     }
 
     public void validateUserId(int usersSize, int id) {
         log.info("Проверка на корректность id пользователя: {}", id);
         if (id < 0 || id > usersSize + 1) {
-            throw new ValidationException("Некорректный id пользователя: " + id);
+            throw new ResourceNotFoundException("Некорректный id пользователя: " + id);
         }
     }
 
