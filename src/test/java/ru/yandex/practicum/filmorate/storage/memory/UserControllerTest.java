@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserIdCounter;
@@ -96,7 +97,7 @@ public class UserControllerTest {
         user2.setId(9999);
         user2.setEmail("mail@yandex.ru");
         user2.setBirthday(LocalDate.of(1976, 9, 20));
-        Throwable exception = assertThrows(ValidationException.class,
+        Throwable exception = assertThrows(ResourceNotFoundException.class,
                 () -> inMemoryUserStorage.updateUser(user2));
         assertEquals("Некорректный id пользователя: " + user2.getId(), exception.getMessage());
     }

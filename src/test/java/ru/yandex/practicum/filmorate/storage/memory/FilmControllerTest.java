@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmIdCounter;
@@ -74,7 +75,7 @@ public class FilmControllerTest {
     void testPutFilmUpdateWithWrongId() {
         inMemoryFilmStorage.createFilm(film);
         film.setId(9999);
-        Throwable exception = assertThrows(ValidationException.class, () -> inMemoryFilmStorage.updateFilm(film));
+        Throwable exception = assertThrows(ResourceNotFoundException.class, () -> inMemoryFilmStorage.updateFilm(film));
         assertEquals("Некорректный идентификатор фильма.", exception.getMessage());
     }
 
