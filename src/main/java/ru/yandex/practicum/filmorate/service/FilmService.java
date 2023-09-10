@@ -24,11 +24,11 @@ public class FilmService implements FilmStorage {
         this.validator = validator;
     }
 
-    public void addLike(int id, int userId) {
+    public void addLike(long id, long userId) {
         filmStorage.addLike(id, userId);
     }
 
-    public void deleteLike(int id, int userId) {
+    public void deleteLike(long id, long userId) {
         filmStorage.deleteLike(id, userId);
     }
 
@@ -56,7 +56,7 @@ public class FilmService implements FilmStorage {
     }
 
     @Override
-    public Film getFilmById(int id) {
+    public Film getFilmById(long id) {
         try {
             return filmStorage.getFilmById(id);
         } catch (EmptyResultDataAccessException e) {
@@ -80,7 +80,7 @@ public class FilmService implements FilmStorage {
     }
 
     @Override
-    public void deleteFilm(int id) {
+    public void deleteFilm(long id) {
         if (id > 0) {
             filmStorage.deleteFilm(id);
             log.warn("Фильм удалён.");

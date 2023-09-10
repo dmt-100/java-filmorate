@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private final Map<Integer, Film> films = new HashMap<>();
-    private Map<Integer, List<Integer>> likes = new HashMap<>();
+    private final Map<Long, Film> films = new HashMap<>();
+    private Map<Long, List<Long>> likes = new HashMap<>();
     private final InMemoryUserStorage inMemoryUserStorage;
     private final Validator validator;
     private final FilmIdCounter filmIdCounter;
@@ -33,7 +33,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getFilmById(int id) {
+    public Film getFilmById(long id) {
         log.debug("Текущий фильм {}", films.get(id));
         return films.get(id);
     }
@@ -57,15 +57,15 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilm(int id) {
+    public void deleteFilm(long id) {
 
     }
 
     @Override
-    public void addLike(int id, int userId) {
+    public void addLike(long id, long userId) {
         if (idValidation(id) && userId > 0 && inMemoryUserStorage.getUsers().containsKey(userId)) {
             Film film = films.get(id);
-            List<Integer> filmLikes = likes.get(id);
+            List<Long> filmLikes = likes.get(id);
             filmLikes.add(userId);
             likes.put(id, filmLikes);
             log.debug("Фильму {} поставили лайк.", film);
@@ -76,10 +76,10 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteLike(int id, int userId) {
+    public void deleteLike(long id, long userId) {
         if (idValidation(id) && likes.get(id).contains(userId)) {
             Film film = films.get(id);
-            likes.get(id).remove((Integer) userId);
+            likes.get(id).remove(userId);
             log.debug("Фильму {} удалили лайк.", film);
         } else {
             log.warn("Ошибка при удалении лайка фильму.");
@@ -90,14 +90,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public List<Film> getMostPopularFilms(int count) {
         if (count > 0) {
-            List<Integer> likesSorted = likes.entrySet()
+            List<Long> likesSorted = likes.entrySet()
                     .stream()
                     .sorted(Comparator.comparingInt(e -> e.getValue().size()))
                     .limit(count)
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
             List<Film> sortedFilms = new ArrayList<>();
-            for (Integer v : likesSorted) {
+            for (Long v : likesSorted) {
                 sortedFilms.add(films.get(v));
             }
             return sortedFilms;
@@ -108,7 +108,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
     }
 
-    private boolean idValidation(@NonNull int id) {
+    private boolean idValidation(@NonNull long id) {
         return films.containsKey(id);
     }
 }

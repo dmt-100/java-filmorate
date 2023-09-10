@@ -41,7 +41,7 @@ public class UserService implements UserStorage {
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getUserById(long id) {
         try {
             return userStorage.getUserById(id);
         } catch (EmptyResultDataAccessException e) {
@@ -54,7 +54,7 @@ public class UserService implements UserStorage {
         return userStorage.allUsers();
     }
 
-    public void addFriend(int id, int friendId) {
+    public void addFriend(long id, long friendId) {
         if (id != friendId) {
             userStorage.addFriend(id, friendId);
         } else {
@@ -63,7 +63,7 @@ public class UserService implements UserStorage {
         }
     }
 
-    public void deleteFriend(int id, int friendId) {
+    public void deleteFriend(long id, long friendId) {
         if (id != friendId) {
             userStorage.deleteFriend(id, friendId);
         } else {
@@ -72,7 +72,7 @@ public class UserService implements UserStorage {
         }
     }
 
-    public List<User> getUserFriends(int id) {
+    public List<User> getUserFriends(long id) {
         try {
             return userStorage.getUserFriends(id);
         } catch (ValidationException e) {
@@ -82,7 +82,7 @@ public class UserService implements UserStorage {
     }
 
     @Override
-    public List<User> getCommonFriendList(int id, int friendId) {
+    public List<User> getCommonFriendList(long id, long friendId) {
         return userStorage.getCommonFriendList(id, friendId);
     }
 

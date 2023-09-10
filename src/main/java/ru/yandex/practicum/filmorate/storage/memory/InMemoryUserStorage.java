@@ -18,8 +18,8 @@ import java.util.*;
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private final Map<Integer, User> users = new HashMap<>();
-    private final Map<User, HashSet<Integer>> friends = new HashMap<>();
+    private final Map<Long, User> users = new HashMap<>();
+    private final Map<User, HashSet<Long>> friends = new HashMap<>();
     private final Validator validator;
     private final UserIdCounter userIdCounter;
 
@@ -30,7 +30,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getUserById(long id) {
         if (users.containsKey(id)) {
             log.debug("Текущий пользователь {}", users.get(id));
             return users.get(id);
@@ -57,7 +57,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void addFriend(int id, int friendId) {
+    public void addFriend(long id, long friendId) {
         if (users.containsKey(id) && users.containsKey(friendId)) {
             User user1 = users.get(id);
             User user2 = users.get(friendId);
@@ -71,7 +71,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void deleteFriend(int id, int friendId) {
+    public void deleteFriend(long id, long friendId) {
         if (users.containsKey(id) && users.containsKey(friendId)) {
             User user1 = users.get(id);
             User user2 = users.get(friendId);
@@ -85,13 +85,13 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> getUserFriends(int id) {
+    public List<User> getUserFriends(long id) {
         List<User> userFriends = new ArrayList<>();
         if (users.containsKey(id)) {
             User user = users.get(id);
             friends.get(user);
-            List<Integer> friendsId = new ArrayList<>(friends.get(user));
-            for (Integer userId : friendsId) {
+            List<Long> friendsId = new ArrayList<>(friends.get(user));
+            for (Long userId : friendsId) {
                 userFriends.add(users.get(userId));
             }
             return userFriends;
@@ -102,12 +102,12 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> getCommonFriendList(int id, int friendId) {
+    public List<User> getCommonFriendList(long id, long friendId) {
         List<User> commonFriendList = new ArrayList<>();
         if (users.containsKey(id) && users.containsKey(friendId)) {
             User user1 = users.get(id);
             User user2 = users.get(friendId);
-            for (int friendsId : friends.get(user2)) {
+            for (long friendsId : friends.get(user2)) {
                 if (friends.get(user1).contains(friendsId)) {
                     commonFriendList.add(users.get(friendsId));
                 }

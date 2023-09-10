@@ -42,7 +42,7 @@ public class UserDaoStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getUserById(long id) {
         return jdbcTemplate.queryForObject(GET_USER_BY_ID, this::mapRowToUser, id);
     }
 
@@ -73,29 +73,29 @@ public class UserDaoStorage implements UserStorage {
     }
 
     @Override
-    public void addFriend(int id, int friendId) {
+    public void addFriend(long id, long friendId) {
         friendDao.addFriend(id, friendId);
     }
 
     @Override
-    public void deleteFriend(int id, int friendId) {
+    public void deleteFriend(long id, long friendId) {
         friendDao.deleteFriend(id, friendId);
     }
 
     @Override
-    public List<User> getUserFriends(int id) {
+    public List<User> getUserFriends(long id) {
         return jdbcTemplate.query(GET_USER_FRIENDS, this::mapRowToUser, id);
     }
 
     @Override
-    public List<User> getCommonFriendList(int id, int friendId) {
+    public List<User> getCommonFriendList(long id, long friendId) {
         return jdbcTemplate.query(GET_COMMON_FRIENDLIST, this::mapRowToUser, id, friendId);
     }
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) {
         try {
             User user = new User();
-            user.setId(resultSet.getInt("user_id"));
+            user.setId(resultSet.getLong("user_id"));
             user.setEmail(resultSet.getString("email"));
             user.setLogin(resultSet.getString("login"));
             user.setName(resultSet.getString("name"));

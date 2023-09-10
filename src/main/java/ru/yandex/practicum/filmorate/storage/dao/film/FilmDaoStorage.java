@@ -59,11 +59,11 @@ public class FilmDaoStorage implements FilmStorage {
             stmt.setString(2, film.getDescription());
             stmt.setDate(3, Date.valueOf(film.getReleaseDate()));
             stmt.setInt(4, film.getDuration());
-            stmt.setInt(5, film.getMpa().getId());
+            stmt.setLong(5, film.getMpa().getId());
             return stmt;
         }, keyHolder);
         if (keyHolder.getKey() != null) {
-            film.setId((Integer) keyHolder.getKey());
+            film.setId((Long) keyHolder.getKey());
         } else {
             throw new ValidationException("Ошибка генерации id в базе.");
         }
@@ -76,7 +76,7 @@ public class FilmDaoStorage implements FilmStorage {
     }
 
     @Override
-    public Film getFilmById(int id) {
+    public Film getFilmById(long id) {
         return jdbcTemplate.queryForObject(GET_FILM_BY_ID, this::mapRowToFilm, id);
     }
 
@@ -89,12 +89,12 @@ public class FilmDaoStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilm(int id) {
+    public void deleteFilm(long id) {
         jdbcTemplate.update(DELETE_FILM_BY_ID, id);
     }
 
     @Override
-    public void deleteLike(int id, int userId) {
+    public void deleteLike(long id, long userId) {
         if (getFilmById(id).getId() == id && userService.getUserById(userId).getId() == userId) {
             likeDao.deleteLikeFromFilm(id, userId);
         } else {
@@ -105,7 +105,7 @@ public class FilmDaoStorage implements FilmStorage {
 
 
     @Override
-    public void addLike(int id, int userId) {
+    public void addLike(long id, long userId) {
         if (getFilmById(id).getId() == id && userService.getUserById(userId).getId() == userId) {
             likeDao.addLikeToFilm(id, userId);
         } else {
@@ -121,15 +121,31 @@ public class FilmDaoStorage implements FilmStorage {
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) {
+//        try {
+//            Film film = new Film();
+//            film.setId(resultSet.getLong("film_id"));
+//            film.setName(resultSet.getString("name"));
+//            film.setDescription(resultSet.getString("description"));
+//            film.setReleaseDate(resultSet.getDate("release_date").toLocalDate());
+//            film.setDuration(resultSet.getInt("duration"));
+//            film.setMpa(new MpaRating(resultSet.getLong("mpa_rating_id"), resultSet.getString("r_title")));
+////            mpa.setId(resultSet.getInt("id"));
+////            mpa.setTitle(resultSet.getString("title"));
+////            film.setMpa(mpa);
+//            film.setGenres(getFilmGenres(film.getId()));
+//            return film;
+//        } catch (EmptyResultDataAccessException | SQLException e) {
+//            throw new ResourceNotFoundException("Ошибка запроса, проверьте корректность данных.");
+//        }
         try {
             MpaRating mpa = new MpaRating();
             Film film = new Film();
-            film.setId(resultSet.getInt("film_id"));
+            film.setId(resultSet.getLong("film_id"));
             film.setName(resultSet.getString("name"));
             film.setDescription(resultSet.getString("description"));
             film.setReleaseDate(resultSet.getDate("release_date").toLocalDate());
             film.setDuration(resultSet.getInt("duration"));
-            mpa.setId(resultSet.getInt("id"));
+            mpa.setId(resultSet.getLong("id"));
             mpa.setTitle(resultSet.getString("title"));
             film.setMpa(mpa);
             film.setGenres(getFilmGenres(film.getId()));
@@ -139,7 +155,7 @@ public class FilmDaoStorage implements FilmStorage {
         }
     }
 
-    private List<Genre> getFilmGenres(int id) {
+    private List<Genre> getFilmGenres(long id) {
         return jdbcTemplate.query(GET_FILM_GENRES, new BeanPropertyRowMapper<>(Genre.class), id);
     }
 

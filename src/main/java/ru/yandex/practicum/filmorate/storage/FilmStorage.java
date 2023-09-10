@@ -8,17 +8,17 @@ public interface FilmStorage {
 
     Film createFilm(Film film);
 
-    Film getFilmById(int id);
+    Film getFilmById(long id);
 
     List<Film> allFilms();
 
     Film updateFilm(Film film);
 
-    void deleteFilm(int id);
+    void deleteFilm(long id);
 
-    void deleteLike(int id, int userId);
+    void deleteLike(long id, long userId);
 
-    void addLike(int id, int userId);
+    void addLike(long id, long userId);
 
     List<Film> getMostPopularFilms(int count);
 }

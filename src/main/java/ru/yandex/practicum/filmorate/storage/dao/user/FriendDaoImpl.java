@@ -14,7 +14,7 @@ public class FriendDaoImpl implements FriendDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void addFriend(int id, int friendId) {
+    public void addFriend(long id, long friendId) {
         try {
             jdbcTemplate.update(ADD_FRIEND, id, friendId);
         } catch (Exception e) {
@@ -23,7 +23,7 @@ public class FriendDaoImpl implements FriendDao {
     }
 
     @Override
-    public void deleteFriend(int id, int friendId) {
+    public void deleteFriend(long id, long friendId) {
         try {
             jdbcTemplate.update(DELETE_FRIEND, id, friendId);
         } catch (Exception e) {

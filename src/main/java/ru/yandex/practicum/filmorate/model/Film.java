@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,10 +14,11 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-public class Film {
+@RequiredArgsConstructor
+public class Film extends AbstractEntity {
 
-    @JsonProperty("id")
-    private int id;
+    //    @JsonProperty("id")
+    //    private int id;
     @NotBlank
     private String name;
     @Size(max = 200)

@@ -11,11 +11,6 @@ public class UserIdCounter {
     }
 
     // only tests
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    // only tests
     public void setIdUserCounter(int id) {
         this.id = id;
     }

@@ -28,8 +28,7 @@ public class Validator {
             throw new ValidationException("Название фильма не должно быть пустым.");
 
         } else if (description.length() > 200) {
-            log.info("Максимальное количество букв в описании фильма не должно превышать {}," +
-                    " description.length: {}", 200, description.length());
+            log.info("Максимальное количество букв в описании фильма не должно превышать {}," + " description.length: {}", 200, description.length());
             throw new ValidationException("Максимальное количество букв в описании фильма не должно превышать 200");
 
         } else if (releaseDate.isBefore(LocalDate.of(1895, 12, 28))) {
@@ -50,16 +49,14 @@ public class Validator {
         final String email = user.getEmail();
         final LocalDate birthDay = user.getBirthday();
         final String name = user.getName();
-        final int id = user.getId();
+        final long id = user.getId();
 
         if (login.isBlank() || login.contains(" ")) {
-            log.warn("Проверка поля login, login.isBlank(): {}, login.contains(\" \"): {}",
-                    login.isBlank(), login.contains(" "));
+            log.warn("Проверка поля login, login.isBlank(): {}, login.contains(\" \"): {}", login.isBlank(), login.contains(" "));
             throw new ValidationException("У пользователя некорректный логин: " + login);
 
         } else if (email.isBlank() || !email.contains("@")) {
-            log.warn("Проверка поля email, email.isBlank(): {}, email.contains(\"@\"): {}",
-                    email.isBlank(), email.contains("@"));
+            log.warn("Проверка поля email, email.isBlank(): {}, email.contains(\"@\"): {}", email.isBlank(), email.contains("@"));
             throw new ValidationException("У пользователя некорректный емейл: " + email);
 
         } else if (birthDay.isAfter(LocalDate.now())) {
@@ -77,7 +74,7 @@ public class Validator {
         return true;
     }
 
-    public boolean validateFilmId(int filmsSize, int id) {
+    public boolean validateFilmId(int filmsSize, long id) {
         log.info("Проверка на корректность id фильма: {}", id);
         if (id < 0 || id > filmsSize + 1) {
             throw new ValidationException("Некорректный идентификатор фильма.");
@@ -85,7 +82,7 @@ public class Validator {
         return true;
     }
 
-    public boolean validateUserId(int usersSize, int id) {
+    public boolean validateUserId(int usersSize, long id) {
         log.info("Проверка на корректность id пользователя: {}", id);
         if (id < 0 || id > usersSize + 1) {
             throw new ValidationException("Некорректный id пользователя: " + id);

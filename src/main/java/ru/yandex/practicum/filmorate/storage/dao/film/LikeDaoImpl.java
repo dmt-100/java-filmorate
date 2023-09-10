@@ -14,12 +14,12 @@ public class LikeDaoImpl implements LikeDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void addLikeToFilm(int id, int userId) {
+    public void addLikeToFilm(long id, long userId) {
         jdbcTemplate.update(ADD_LIKE, id, userId);
     }
 
     @Override
-    public void deleteLikeFromFilm(int id, int userId) {
+    public void deleteLikeFromFilm(long id, long userId) {
         jdbcTemplate.update(DELETE_LIKE, id, userId);
     }
 }

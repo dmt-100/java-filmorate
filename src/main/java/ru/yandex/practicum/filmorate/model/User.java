@@ -1,6 +1,9 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -11,9 +14,12 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Data
-public class User {
+@Getter
+@Setter
+@RequiredArgsConstructor
+public class User extends AbstractEntity {
 
-    private int id;
+    //    private int id;
     @NotNull
     @Email
     private String email;

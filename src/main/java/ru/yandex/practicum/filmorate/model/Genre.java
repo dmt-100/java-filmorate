@@ -1,10 +1,14 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
-public class Genre {
+@Getter
+@Setter
+public class Genre extends AbstractEntity {
 
-    private int id;
+    //    private int id;
     private String name;
 }
