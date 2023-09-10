@@ -5,45 +5,44 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.dao.film.FilmDaoStorage;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
 @Service
-public class FilmService implements FilmStorage {
-    private final FilmStorage filmStorage;
+public class FilmService implements FilmServiceImpl {
+    private final FilmDaoStorage filmDaoStorage;
     private final Validator validator;
 
-    public FilmService(@Qualifier("filmDaoStorage") FilmStorage filmStorage, Validator validator) {
-        this.filmStorage = filmStorage;
+    public FilmService(@Qualifier("filmDaoStorage") FilmDaoStorage filmDaoStorage, Validator validator) {
+        this.filmDaoStorage = filmDaoStorage;
         this.validator = validator;
     }
 
     public void addLike(int id, int userId) {
-        filmStorage.addLike(id, userId);
+        filmDaoStorage.addLike(id, userId);
     }
 
     public void deleteLike(int id, int userId) {
-        filmStorage.deleteLike(id, userId);
+        filmDaoStorage.deleteLike(id, userId);
     }
 
     @Override
     public Film createFilm(@Valid Film film) {
-        if (validator.validateFilm(film)) {
-            filmStorage.createFilm(film);
-            log.debug("Сохранен фильм: {}", film);
-        }
+        validator.validateFilm(film);
+        filmDaoStorage.createFilm(film);
+        log.debug("Сохранен фильм: {}", film);
         return film;
     }
 
     public List<Film> getMostPopularFilms(int count) {
         if (count > 0) {
-            return filmStorage.getMostPopularFilms(count);
+            return filmDaoStorage.getMostPopularFilms(count);
         } else {
             log.warn("Ошибка запроса списка популярных фильмов.");
             throw new ValidationException("Ошибка запроса списка популярных фильмов, проверьте корректность данных.");
@@ -52,13 +51,13 @@ public class FilmService implements FilmStorage {
 
     @Override
     public List<Film> allFilms() {
-        return filmStorage.allFilms();
+        return filmDaoStorage.allFilms();
     }
 
     @Override
     public Film getFilmById(int id) {
         try {
-            return filmStorage.getFilmById(id);
+            return filmDaoStorage.getFilmById(id);
         } catch (EmptyResultDataAccessException e) {
             log.warn("Ошибка запроса фильма.");
             throw new ResourceNotFoundException("Ошибка запроса фильма, проверьте корректность данных.");
@@ -67,25 +66,29 @@ public class FilmService implements FilmStorage {
 
     @Override
     public Film updateFilm(@NonNull Film film) {
-        if (getFilmById(film.getId()).getId() == film.getId()
-                && validator.validateFilm(film)
-                && validator.validateFilmId(filmStorage.allFilms().size(), film.getId())) {
-            filmStorage.updateFilm(film);
-            log.debug("Обновлен фильм: {}", film);
-            return film;
-        } else {
+        try {
+            validator.validateFilm(film);
+            validator.validateFilmId(filmDaoStorage.allFilms().size(), film.getId());
+            int filmIdInStorage = getFilmById(film.getId()).getId();
+            int filmId = film.getId();
+            if (filmIdInStorage == filmId) {
+                filmDaoStorage.updateFilm(film);
+                log.debug("Обновлен фильм: {}", film);
+            }
+        } catch (ResourceNotFoundException e) {
             log.warn("Ошибка при обновлении фильма: {}", film);
             throw new ResourceNotFoundException("Ошибка при изменении фильма, проверьте корректность данных.");
         }
+        return film;
     }
 
     @Override
     public void deleteFilm(int id) {
         if (id > 0) {
-            filmStorage.deleteFilm(id);
+            filmDaoStorage.deleteFilm(id);
             log.warn("Фильм удалён.");
         } else {
-            log.warn("Ошибка при удалении фильма с id: {}", filmStorage.getFilmById(id));
+            log.warn("Ошибка при удалении фильма с id: {}", filmDaoStorage.getFilmById(id));
             throw new ResourceNotFoundException("Ошибка при удалении фильма, проверьте корректность id фильма.");
         }
     }

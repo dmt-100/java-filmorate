@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmIdCounter;
 import ru.yandex.practicum.filmorate.service.Validator;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,18 +40,17 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film createFilm(@NonNull Film film) {
         film.setId(filmIdCounter.increaseFilmId());
-        if (validator.validateFilm(film)) {
-            films.put(film.getId(), film);
-            log.debug("Сохранен фильм: {}", film);
-        }
+        validator.validateFilm(film);
+        films.put(film.getId(), film);
+        log.debug("Сохранен фильм: {}", film);
         return film;
     }
 
     @Override
     public Film updateFilm(@NonNull Film film) {
-        if (validator.validateFilm(film) && validator.validateFilmId(films.size(), film.getId())) {
-            films.put(film.getId(), film);
-        }
+        validator.validateFilm(film);
+        validator.validateFilmId(films.size(), film.getId());
+        films.put(film.getId(), film);
         return film;
     }
 

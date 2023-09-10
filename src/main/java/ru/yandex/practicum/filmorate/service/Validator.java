@@ -16,7 +16,7 @@ public class Validator {
     public Validator() {
     }
 
-    public boolean validateFilm(Film film) {
+    public void validateFilm(Film film) {
 
         String name = film.getName();
         String description = film.getDescription();
@@ -42,10 +42,9 @@ public class Validator {
         } else if (film.getLikes() == null) {
             film.setLikes(new HashSet<>());
         }
-        return true;
     }
 
-    public boolean validateUser(User user) {
+    public void validateUser(User user) {
         final String login = user.getLogin();
         final String email = user.getEmail();
         final LocalDate birthDay = user.getBirthday();
@@ -74,23 +73,20 @@ public class Validator {
         if (user.getFriends() == null) {
             user.setFriends(new HashSet<>());
         }
-        return true;
     }
 
-    public boolean validateFilmId(int filmsSize, int id) {
+    public void validateFilmId(int filmsSize, int id) {
         log.info("Проверка на корректность id фильма: {}", id);
         if (id < 0 || id > filmsSize + 1) {
             throw new ValidationException("Некорректный идентификатор фильма.");
         }
-        return true;
     }
 
-    public boolean validateUserId(int usersSize, int id) {
+    public void validateUserId(int usersSize, int id) {
         log.info("Проверка на корректность id пользователя: {}", id);
         if (id < 0 || id > usersSize + 1) {
             throw new ValidationException("Некорректный id пользователя: " + id);
         }
-        return true;
     }
 
 }

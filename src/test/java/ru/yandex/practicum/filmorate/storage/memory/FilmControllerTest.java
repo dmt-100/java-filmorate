@@ -49,6 +49,7 @@ public class FilmControllerTest {
 
     @Test
     void testCreateFilmWithTooLongDescription() {
+        final int MAX_DESCRIPTION_LENGTH = 200;
         final String DESCRIPTION_MORE_THAN_200 = "Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. " + "Здесь они хотят разыскать господина Огюста Куглова, который задолжал им деньги, " + "а именно 20 миллионов. о Куглов, который за время «своего отсутствия», стал кандидатом Коломбани.";
         film.setDescription(DESCRIPTION_MORE_THAN_200);
         Throwable exception = assertThrows(ValidationException.class, () -> inMemoryFilmStorage.updateFilm(film));

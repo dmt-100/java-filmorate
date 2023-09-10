@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MpaRating;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import javax.validation.ValidationException;
 import java.sql.Date;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @AllArgsConstructor
 @Component
-public class FilmDaoStorage implements FilmStorage {
+public class FilmDaoStorage implements FilmDao {
     private static final String CREATE_FILM = "INSERT INTO films " +
             "(name, description, release_date, duration, rating_id) " +
             "VALUES (?, ?, ?, ?, ?)";

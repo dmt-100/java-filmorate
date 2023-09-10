@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserIdCounter;
 import ru.yandex.practicum.filmorate.service.Validator;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 
@@ -43,16 +42,16 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User createUser(@NonNull User user) {
         user.setId(userIdCounter.increaseUserId());
-        if (validator.validateUser(user))
-            users.put(user.getId(), user);
+        validator.validateUser(user);
+        users.put(user.getId(), user);
         return user;
     }
 
     @Override
     public User updateUser(@NonNull User user) {
-        if (validator.validateUser(user) && validator.validateUserId(users.size(), user.getId())) {
-            users.put(user.getId(), user);
-        }
+        validator.validateUser(user);
+        validator.validateUserId(users.size(), user.getId());
+        users.put(user.getId(), user);
         return user;
     }
 

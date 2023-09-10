@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Sql(scripts = "classpath:data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class FilmDaoStorageTest {
+class FilmDaoStorageStorageTest {
     private final FilmDaoStorage filmDaoStorage;
     private final MpaRatingDaoImpl mpaRatingDao;
 
