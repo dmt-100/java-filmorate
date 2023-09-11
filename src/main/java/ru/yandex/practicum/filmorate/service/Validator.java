@@ -2,8 +2,8 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exeption.ResourceNotFoundException;
-import ru.yandex.practicum.filmorate.exeption.ValidationException;
+import ru.yandex.practicum.filmorate.exception.ResourceNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -17,10 +17,8 @@ public class Validator {
     public Validator() {
     }
 
-    public static boolean validateFilm(Film film) {
-        int maxDescriptionLength = 200;
+    public void validateFilm(Film film) {
 
-        int id = film.getId();
         String name = film.getName();
         String description = film.getDescription();
         LocalDate releaseDate = film.getReleaseDate();
@@ -28,14 +26,12 @@ public class Validator {
 
         if (name.isBlank()) {
             log.info("Проверка поля name, name.isBlank(): {}", name.isBlank());
-            throw new ValidationException("Название фильма не должно быть пустым, " + name.isBlank());
+            throw new ValidationException("Название фильма не должно быть пустым.");
 
-        } else if (description.length() > maxDescriptionLength) {
+        } else if (description.length() > 200) {
             log.info("Максимальное количество букв в описании фильма не должно превышать {}," +
-                    " description.length: {}", maxDescriptionLength, description.length());
-
-            throw new ValidationException("Максимальное количество букв в описании фильма не должно превышать " +
-                    maxDescriptionLength + ", description.length(): " + description.length());
+                    " description.length: {}", 200, description.length());
+            throw new ValidationException("Максимальное количество букв в описании фильма не должно превышать 200");
 
         } else if (releaseDate.isBefore(LocalDate.of(1895, 12, 28))) {
             log.info("Проверка на корректность даты фильма, releaseDate: {}", releaseDate);
@@ -47,10 +43,9 @@ public class Validator {
         } else if (film.getLikes() == null) {
             film.setLikes(new HashSet<>());
         }
-        return true;
     }
 
-    public static boolean validateUser(User user) {
+    public void validateUser(User user) {
         final String login = user.getLogin();
         final String email = user.getEmail();
         final LocalDate birthDay = user.getBirthday();
@@ -79,17 +74,16 @@ public class Validator {
         if (user.getFriends() == null) {
             user.setFriends(new HashSet<>());
         }
-        return true;
     }
 
-    public static void validateFilmId(int filmsSize, int id) {
+    public void validateFilmId(int filmsSize, int id) {
         log.info("Проверка на корректность id фильма: {}", id);
         if (id < 0 || id > filmsSize + 1) {
-            throw new ResourceNotFoundException("Некорректный id фильма: " + id);
+            throw new ResourceNotFoundException("Некорректный идентификатор фильма.");
         }
     }
 
-    public static void validateUserId(int usersSize, int id) {
+    public void validateUserId(int usersSize, int id) {
         log.info("Проверка на корректность id пользователя: {}", id);
         if (id < 0 || id > usersSize + 1) {
             throw new ResourceNotFoundException("Некорректный id пользователя: " + id);
