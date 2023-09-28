@@ -15,5 +15,5 @@
 4. Функциональность «Рекомендации».
 5. Функциональность «Лента событий».
 
-![] (https://github.com/dmt-100/java-filmorate/blob/YandexPracticum-Command_Work/2023-09-28%2020%2049%2059.jpg)
-![] (https://i.ibb.co/sV4R4G1/2023-09-28-20-50-55.jpg)
+![1] (https://github.com/dmt-100/java-filmorate/blob/YandexPracticum-Command_Work/2023-09-28%2020%2049%2059.jpg)
+![2] (https://i.ibb.co/sV4R4G1/2023-09-28-20-50-55.jpg)
