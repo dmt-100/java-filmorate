@@ -14,6 +14,5 @@
 3. Функциональность «Общие фильмы».
 4. Функциональность «Рекомендации».
 5. Функциональность «Лента событий».
-![Image alt](https://github.com/{/dmt-100}/{java-filmorate}/raw/{YandexPracticum-Command_Work}/{[path](https://github.com/dmt-100/java-filmorate/blob/YandexPracticum-Command_Work/2023-09-28%2020%2049%2059.jpg)}/image.jpg)
-![1] (https://github.com/dmt-100/java-filmorate/blob/YandexPracticum-Command_Work/2023-09-28%2020%2049%2059.jpg)
-![2] (https://i.ibb.co/sV4R4G1/2023-09-28-20-50-55.jpg)
+![2023-09-28 20 50 55](https://github.com/dmt-100/java-filmorate/assets/117279018/4513f219-e20d-4173-9f66-8b6f09d44865)
+![2023-09-28 20 49 59](https://github.com/dmt-100/java-filmorate/assets/117279018/2410fec4-84dc-4123-88f9-e734166711a3)
